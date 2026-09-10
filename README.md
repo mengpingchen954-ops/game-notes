@@ -18,7 +18,7 @@ npm run dev
 
 打开 `http://127.0.0.1:5180/`。按 `N` 新建分析；编辑时按 `Ctrl+S` 保存。
 
-在线版本：<https://2046478112-beep.github.io/game-notes/>
+在线版本：<https://mengpingchen954-ops.github.io/game-notes/>
 
 资料保存在当前浏览器的 `localStorage`。请定期使用左侧的“备份”导出 JSON；换浏览器或换电脑时使用“导入”合并。单篇分析还可以导出为 Markdown。
 
