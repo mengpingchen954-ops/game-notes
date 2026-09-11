@@ -14,3 +14,9 @@ body{background:var(--bg);color:var(--ink)}
 .guide-mark{border-radius:18px;background:#1d2020;color:#d9f08e}.guide-lead{border-left:0;border-top:2px solid #20221f;padding:16px 0 0}.copy-block{border-radius:12px;overflow:hidden;border-color:var(--line)}
 @media (max-width:900px){.sidebar{width:220px}.main{margin-left:220px}.document-layout{grid-template-columns:1fr;padding-inline:24px}.contents{display:none}.title-line h1{font-size:34px}}
 @media (max-width:680px){.sidebar{position:relative;width:auto;height:auto;min-height:0}.main{margin-left:0}.topbar{padding:0 16px}.merged-shell{display:block}.library-page,.template-page,.editor-page,.guide-page{padding:36px 18px 80px}.page-intro{display:block}.page-intro h1{font-size:30px}.library-toolbar{grid-template-columns:1fr}.game-heading{grid-template-columns:64px 1fr}.game-monogram{width:64px;height:64px;font-size:19px}.title-line h1{font-size:28px}}
+.template-page{max-width:1440px;width:100%;padding-inline:clamp(28px,5vw,86px)}
+.template-page .page-intro{max-width:900px}
+.template-page .formula{max-width:1120px}
+.template-sections{grid-template-columns:repeat(2,minmax(0,1fr));box-shadow:0 12px 30px rgba(31,35,29,.05)}
+.template-sections>section{min-height:300px;padding:32px}
+@media (max-width:900px){.template-page{padding-inline:24px}.template-sections{grid-template-columns:1fr}}
