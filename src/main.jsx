@@ -4,6 +4,7 @@ import {Menu,ChevronRight,Download,FilePenLine,Check,AlertCircle,X,Plus} from 'l
 import {Sidebar,GameDetail,LibraryView,TemplateView,StudioGuide,Editor,ConfirmDialog} from './components';
 import {STORAGE_KEY,loadLibrary,blankRecord,backup,parseBackup,mergeRecords,download,markdown} from './model';
 import './styles.css';
+import './taste-overrides.css';
 
 function App(){
  const [initial]=useState(loadLibrary);const [records,setRecords]=useState(initial.records);const [error,setError]=useState(initial.error);
