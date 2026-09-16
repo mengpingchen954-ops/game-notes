@@ -1,5 +1,6 @@
 :root{--bg:#f2f0ea;--surface:#fffdf8;--ink:#20221f;--muted:#777a70;--line:#deddd3;--rail:#1d2020;--rail-soft:#2a2e2c;--violet:#b9d96b;--violet-soft:#eef5d9;--shadow:0 16px 40px rgba(31,35,29,.08)}
 body{background:var(--bg);color:var(--ink)}
+.sidebar{font-size:14px}.brand{font-size:15px}.brand small{font-size:9px}.rail-label{font-size:11px}.nav-item{font-size:14px;min-height:40px}.recent-item{font-size:12px;min-height:32px}.sidebar-bottom{font-size:11px}
 .sidebar{width:248px;background:var(--rail);padding:26px 16px 20px;border-right:0}
 .main{margin-left:248px}
 .brand-mark{width:39px;height:39px;border-radius:11px;background:#d9f08e;color:#202b21;border-color:#d9f08e}
@@ -23,7 +24,8 @@ body{background:var(--bg);color:var(--ink)}
 @media (max-width:680px){.sidebar{position:relative;width:auto;height:auto;min-height:0}.main{margin-left:0}.topbar{padding:0 16px}.merged-shell{display:block}.library-page,.template-page,.editor-page,.guide-page{padding:36px 18px 80px}.page-intro{display:block}.page-intro h1{font-size:30px}.library-toolbar{grid-template-columns:1fr}.game-heading{grid-template-columns:64px 1fr}.game-monogram{width:64px;height:64px;font-size:19px}.title-line h1{font-size:28px}}
 .template-page{max-width:1440px;width:100%;padding-inline:clamp(28px,5vw,86px)}
 .template-page .page-intro{max-width:900px}
+.template-page .page-intro p{font-size:14px}.template-page>.formula{font-size:13px}.template-page .formula-label{font-size:12px}.template-page .formula-part{font-size:13px;height:46px}.template-page .formula>p{font-size:12px}
 .template-page .formula{max-width:1120px}
 .template-sections{grid-template-columns:repeat(2,minmax(0,1fr));box-shadow:0 12px 30px rgba(31,35,29,.05)}
-.template-sections>section{min-height:300px;padding:32px}
+.template-sections>section{min-height:300px;padding:32px}.template-sections .section-heading h2{font-size:25px}.template-sections .section-heading p{font-size:12px}.template-question h3{font-size:15px}.template-question p{font-size:12px;line-height:1.8}
 @media (max-width:900px){.template-page{padding-inline:24px}.template-sections{grid-template-columns:1fr}}
