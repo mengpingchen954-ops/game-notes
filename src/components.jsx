@@ -52,6 +52,29 @@ export function StudioGuide({onToast}){
  const copy=async text=>{try{await navigator.clipboard.writeText(text);onToast('内容已复制');}catch{onToast('复制失败，请手动选择文本');}};
  const flow=[['01','start-game-project','把原始想法整理成项目简报'],['02','define-game-concept','确定受众、玩法钩子和体验目标'],['03','write-gdd','形成可执行的游戏设计文档'],['04','plan-production','拆分原型、垂直切片和正式版本'],['05','design-ui-flow','设计菜单、HUD 和操作流程'],['06','implement-feature','把明确的玩法转成实现任务'],['07','run-qa-pass','检查规则漏洞、回归问题和体验'],['08','prepare-release','核对构建、商店资料和发布条件']];
  const roles=[['game-designer','玩法规则、系统、成长和新手引导'],['producer','范围控制、优先级和里程碑'],['game-director','体验方向与产品取舍'],['creative-director','题材、语气、世界观与包装'],['tech-director','技术架构、性能与风险'],['ui-ux-designer','界面信息架构与交互流程'],['visual-artist','美术方向与资产清单'],['audio-designer','音效、音乐与听觉反馈'],['qa-lead','验收标准与测试策略'],['release-manager','打包、发布说明与交付检查']];
+ const platformGroups=[
+  {title:'PC 商店',intro:'适合完整体验、买断制、抢先体验和 DLC。',items:[
+   ['Steam','PC 独立游戏的首选阵地，适合先做小体量验证。','商店','https://store.steampowered.com/','Steamworks','https://partner.steamgames.com/'],
+   ['Epic Games Store','PC 商店与发行入口，可作为 Steam 之外的补充。','浏览商店','https://store.epicgames.com/','开发者支持','https://dev.epicgames.com/'],
+   ['itch.io','适合原型、小众作品和自由定价测试。','浏览游戏','https://itch.io/games','创作者后台','https://itch.io/game-development'],
+   ['GOG','适合完成度高、强调 DRM-free 的 PC 游戏。','浏览游戏','https://www.gog.com/en/games','开发者入口','https://www.gog.com/submit']
+  ]},
+  {title:'主机与移动端',intro:'需要更严格的认证、适配和发行准备，适合验证过的作品。',items:[
+   ['PlayStation Partners','PlayStation 开发者与发行申请入口。','开发者入口','https://partners.playstation.net/'],
+   ['ID@Xbox','Xbox 独立开发者计划与主机发布信息。','开发者入口','https://www.xbox.com/en-US/partners/id'],
+   ['Nintendo Developer Portal','Nintendo Switch 等平台的开发者入口。','开发者入口','https://developer.nintendo.com/'],
+   ['App Store Connect','iPhone、iPad 和 Mac 游戏的提交与运营后台。','开发者入口','https://appstoreconnect.apple.com/'],
+   ['Google Play Console','Android 游戏的发布、测试和数据后台。','开发者入口','https://play.google.com/console/about/'],
+   ['TapTap','适合浏览中国玩家反馈，也可作为移动游戏发行渠道。','浏览游戏','https://www.taptap.cn/','开发者中心','https://developer.taptap.cn/']
+  ]},
+  {title:'网页与中国市场',intro:'适合短局、轻量、广告或社交传播型游戏。',items:[
+   ['CrazyGames','网页小游戏平台，适合快速测试留存和广告变现。','浏览游戏','https://www.crazygames.com/','开发者文档','https://developer.crazygames.com/'],
+   ['Poki','面向全球玩家的网页游戏平台。','浏览游戏','https://poki.com/','开发者入口','https://developers.poki.com/'],
+   ['WeGame','面向中国 PC 玩家，通常需要发行与合规支持。','浏览游戏','https://www.wegame.com.cn/'],
+   ['微信小游戏','适合短局、社交传播和广告内购模式。','平台说明','https://developers.weixin.qq.com/minigame/dev/guide/'],
+   ['抖音小游戏','适合依靠内容传播和短视频获客的轻量产品。','开发者平台','https://microgame.feishu.cn/']
+  ]}
+ ];
  return <div className="guide-page"><header className="guide-hero"><div className="guide-mark"><Gamepad2 size={28}/><span>CODEX</span></div><div><h1>Codex 游戏工作室</h1><p>用角色、工作流和文档模板，把一个游戏想法逐步推进到可测试、可发布的版本。</p><div className="guide-links"><a href="https://github.com/jackli12/codex-game-studio" target="_blank" rel="noreferrer">Codex 适配版<ExternalLink size={13}/></a><a href="https://github.com/Donchitos/Claude-Code-Game-Studios" target="_blank" rel="noreferrer">原始 Claude 项目<ExternalLink size={13}/></a></div></div></header>
  <section className="guide-lead"><strong>推荐使用 Codex 适配版</strong><p>原始项目依赖 Claude Code 的 Agent、Hook 和斜杠命令；适配版把核心工作方式转换成 Codex 可以直接发现和调用的 Skills。它提供方法和流程，不会自动替你完成整款游戏。</p></section>
  <section className="player-profile">
@@ -61,8 +84,10 @@ export function StudioGuide({onToast}){
    <div className="radar-card"><div className="radar-title">体验偏好坐标</div><svg viewBox="0 0 220 190" role="img" aria-label="玩家体验偏好图"><polygon points="110,12 190,70 160,164 60,164 30,70" fill="none" stroke="#dfe6cf"/><polygon points="110,42 162,80 142,140 78,140 58,80" fill="none" stroke="#e5eadb"/><polygon points="110,28 177,77 150,148 70,148 43,77" fill="#d9f08e" fillOpacity=".62" stroke="#91ae4b" strokeWidth="2"/><line x1="110" y1="12" x2="110" y2="164" stroke="#e6eadf"/><line x1="30" y1="70" x2="160" y2="164" stroke="#e6eadf"/><line x1="190" y1="70" x2="60" y2="164" stroke="#e6eadf"/><text x="110" y="9" textAnchor="middle">风险</text><text x="198" y="73">反馈</text><text x="160" y="180">重玩</text><text x="60" y="180">氛围</text><text x="5" y="73">推理</text><circle cx="110" cy="28" r="4" fill="#1d2020"/></svg><div className="radar-caption">高风险决策 · 有限信息 · 快速重来</div></div>
    <div className="profile-cards"><div><b>你在寻找</b><strong>短流程、高密度的赌局体验</strong><span>几分钟学会，几十分钟研究；每一局都能迅速进入状态。</span></div><div><b>你会留下</b><strong>简单规则带来的复杂判断</strong><span>根据线索、概率和手上资源下注，并承担清晰的后果。</span></div><div><b>你愿意分享</b><strong>一次“差一点就赢了”的故事</strong><span>强烈的起伏、独特的风格和能被朋友复述的瞬间。</span></div></div>
   </div>
-  <div className="value-loop"><div className="value-loop-label">你的价值闭环</div><div className="value-loop-steps"><span><i>01</i>看见风险</span><b>→</b><span><i>02</i>判断下注</span><b>→</b><span><i>03</i>承受反馈</span><b>→</b><span><i>04</i>立刻重来</span></div><p>所以你真正喜欢的公式是：<em>简单规则 + 有限资源 + 不完整信息 + 高风险选择 + 强烈反馈。</em></p></div>
+ <div className="value-loop"><div className="value-loop-label">你的价值闭环</div><div className="value-loop-steps"><span><i>01</i>看见风险</span><b>→</b><span><i>02</i>判断下注</span><b>→</b><span><i>03</i>承受反馈</span><b>→</b><span><i>04</i>立刻重来</span></div><p>所以你真正喜欢的公式是：<em>简单规则 + 有限资源 + 不完整信息 + 高风险选择 + 强烈反馈。</em></p></div>
  </section>
+ <section className="guide-section release-strategy"><div className="guide-section-title"><Workflow size={20}/><div><span>发布策略</span><h2>短期先验证，长期再做 Steam 旗舰作</h2></div></div><p className="guide-intro">把项目拆成两条线：短期作品负责验证玩法、平台和获客，长期作品再承担品牌与更高收益潜力。短期项目建议控制在 4～8 周，只保留一个核心玩法、少量关卡和一套完整的美术包装。</p><div className="strategy-grid"><div><strong>短期项目</strong><p>优先做可发布的小体量版本，先观察玩家是否愿意玩、是否愿意回来，以及哪种平台和付费方式更合适。</p><ul><li>网页、itch.io 或移动端小体量产品</li><li>记录留存、评价、愿望单和付费率</li><li>数据不理想时及时结束或转向</li></ul></div><div><strong>长期项目</strong><p>在验证结果明确后，再投入更完整的 Steam 游戏，把短期项目积累的技术、UI、数据和发行经验复用进去。</p><ul><li>先做核心循环和垂直切片</li><li>再扩展内容、剧情和美术规模</li><li>发布前准备商店页、Demo 和社区运营</li></ul></div></div><div className="strategy-note"><strong>玩法借鉴边界</strong><span>可以借鉴类型、规则和高层循环；需要重新创作角色、美术、音乐、文字、剧情、地图、UI、商标和宣传包装。发布前检查版权、商标和可能存在的专利风险。</span></div></section>
+ <section className="guide-section platform-section"><div className="guide-section-title"><ExternalLink size={20}/><div><span>快速入口</span><h2>游戏平台与开发者网站</h2></div></div><p className="guide-intro">先用“浏览游戏”链接做竞品和市场观察，再根据目标平台打开开发者入口。平台分成、审核和合规要求会变化，正式发布前请以官方条款为准。</p>{platformGroups.map(group=><div className="platform-group" key={group.title}><div className="platform-group-heading"><h3>{group.title}</h3><span>{group.intro}</span></div><div className="platform-grid">{group.items.map(([name,desc,browse,browseUrl,dev,devUrl])=><div className="platform-card" key={name}><div><strong>{name}</strong><p>{desc}</p></div><div className="platform-actions"><a href={browseUrl} target="_blank" rel="noreferrer">{browse}<ExternalLink size={13}/></a>{dev&&<a href={devUrl} target="_blank" rel="noreferrer">{dev}<ExternalLink size={13}/></a>}</div></div>)}</div></div>)}</section>
  <section className="guide-section"><div className="guide-section-title"><Terminal size={20}/><div><span>01</span><h2>安装与更新</h2></div></div><p className="guide-intro">在 Windows PowerShell 中运行以下命令，完成后重启 Codex。</p><CopyBlock label="首次安装" text={installCommand} onCopy={copy}/><CopyBlock label="以后更新" text={'git -C "$HOME\\.agents\\skills\\codex-game-studio" pull'} onCopy={copy}/></section>
  <section className="guide-section"><div className="guide-section-title"><Users size={20}/><div><span>02</span><h2>按岗位调用</h2></div></div><p className="guide-intro">问题已经明确时，直接指定专业岗位。每次只给它一个清楚的目标和约束。</p><div className="role-list">{roles.map(([name,desc])=><div className="role-row" key={name}><code>{name}</code><span>{desc}</span></div>)}</div></section>
  <section className="guide-section"><div className="guide-section-title"><Workflow size={20}/><div><span>03</span><h2>按阶段推进</h2></div></div><p className="guide-intro">从概念到发行可以依次使用以下流程。当前阶段完成并确认后，再进入下一阶段。</p><ol className="workflow-list">{flow.map(([n,name,desc])=><li key={name}><span>{n}</span><div><code>{name}</code><p>{desc}</p></div></li>)}</ol></section>
