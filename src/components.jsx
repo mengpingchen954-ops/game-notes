@@ -7,6 +7,7 @@ import {KnowledgeIndex} from './KnowledgeView';
 export const layerIcons=[Target,SlidersHorizontal,RotateCw,AudioLines];
 export const studioModules=[
  {key:'guide',icon:Users,label:'工作室指南',title:'Codex 游戏工作室',description:'从一个想法出发，按模块推进到可测试、可发布的版本。'},
+ {key:'plan',icon:CalendarDays,label:'90天打卡',title:'90天执行计划',description:'逐日记录游戏开发、内容验证，以及工具和课程的阶段决策。'},
  {key:'studio-profile',icon:Gamepad2,label:'玩家画像',title:'玩家画像',description:'明确你想做的体验，以及玩家为什么愿意反复回来。'},
  {key:'studio-strategy',icon:Workflow,label:'发布策略',title:'发布策略',description:'用短期作品验证玩法和平台，再投入长期 Steam 项目。'},
  {key:'studio-platforms',icon:ExternalLink,label:'平台入口',title:'游戏平台与开发者网站',description:'集中浏览竞品、发行平台和开发者后台。'},
@@ -16,13 +17,13 @@ export const studioModules=[
  {key:'studio-prompts',icon:BookOpen,label:'提示词库',title:'直接可用的提示词',description:'复制项目立项、玩法原型和范围控制提示词。'}
 ];
 export function Sidebar({records,view,activeId,onView,onSelect,onNew,onImport,onExport,mobile,onClose}){
- const nav=[['library',Library,'全部分析',records.length],['favorites',Star,'我的收藏',records.filter(r=>r.favorite).length],['drafts',FilePenLine,'分析草稿',records.filter(r=>r.status==='草稿').length],['template',Layers3,'分析模板',null],['guide',Users,'工作室指南',null]];
+ const nav=[['library',Library,'全部分析',records.length],['favorites',Star,'我的收藏',records.filter(r=>r.favorite).length],['drafts',FilePenLine,'分析草稿',records.filter(r=>r.status==='草稿').length],['template',Layers3,'分析模板',null],['guide',Users,'工作室指南',null],['plan',CalendarDays,'90天打卡',null]];
  return <><div className={'nav-backdrop '+(mobile?'visible':'')} onClick={onClose}/><aside className={'sidebar '+(mobile?'mobile-open':'')}>
   <a className="brand" href="#library" onClick={e=>{e.preventDefault();onView('library');}}><span className="brand-mark"><Layers3 size={23}/></span><span>游戏拆解室<small>GAME NOTES</small></span></a>
   <button className="sidebar-new" onClick={onNew}><Plus size={17}/>新建游戏分析<span>N</span></button>
   <div className="rail-label">我的工作台</div><nav>{nav.map(([key,Icon,label,count])=><button key={key} className={'nav-item '+(view===key?'selected':'')} onClick={()=>onView(key)}><Icon size={18}/>{label}{count!==null&&<span>{count}</span>}</button>)}</nav>
-  <div className="rail-label studio-label">开发与商业笔记</div><nav className="studio-nav" aria-label="开发与商业笔记"><button className={'nav-item '+(view==='plan'?'selected':'')} aria-current={view==='plan'?'page':undefined} onClick={()=>onView('plan')}><CalendarDays size={18}/>90天执行计划</button>{knowledgeNotes.map(({key,label})=><button key={key} className={'nav-item '+(view===key?'selected':'')} aria-current={view===key?'page':undefined} onClick={()=>onView(key)}><BookOpen size={18}/>{label}</button>)}</nav>
-  <div className="rail-label studio-label">工作室模块</div><nav className="studio-nav">{studioModules.slice(1).map(({key,icon:Icon,label})=><button key={key} className={'nav-item '+(view===key?'selected':'')} onClick={()=>onView(key)}><Icon size={18}/>{label}</button>)}</nav>
+  <div className="rail-label studio-label">开发与商业笔记</div><nav className="studio-nav" aria-label="开发与商业笔记">{knowledgeNotes.map(({key,label})=><button key={key} className={'nav-item '+(view===key?'selected':'')} aria-current={view===key?'page':undefined} onClick={()=>onView(key)}><BookOpen size={18}/>{label}</button>)}</nav>
+  <div className="rail-label studio-label">工作室模块</div><nav className="studio-nav">{studioModules.slice(1).filter(({key})=>key!=='plan').map(({key,icon:Icon,label})=><button key={key} className={'nav-item '+(view===key?'selected':'')} onClick={()=>onView(key)}><Icon size={18}/>{label}</button>)}</nav>
   <div className="rail-label recent-label">最近编辑</div><div className="recent-list">{[...records].sort((a,b)=>Date.parse(b.updatedAt)-Date.parse(a.updatedAt)).slice(0,6).map(r=><button key={r.id} className={'recent-item '+(view==='detail'&&activeId===r.id?'selected':'')} onClick={()=>onSelect(r.id)}><span className="tiny-dot"/><span>{r.title}</span>{r.favorite&&<Star size={12}/>}</button>)}{records.length===0&&<p className="rail-empty">下一次灵感，从这里开始。</p>}</div>
   <div className="sidebar-bottom"><div className="backup-actions"><button onClick={onImport}><Upload size={15}/>导入</button><button onClick={onExport}><Download size={15}/>备份</button></div><div className="storage-note"><span className="online-dot"/>资料保存在当前浏览器</div><p>把每一次游玩，变成设计积累。</p></div>
  </aside></>;
