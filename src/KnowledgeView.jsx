@@ -1,12 +1,14 @@
 import React from 'react';
-import {ArrowRight, BookOpen} from 'lucide-react';
+import {ArrowRight, BookOpen, CalendarDays} from 'lucide-react';
 import {knowledgeNotes} from './knowledge';
 
 export function KnowledgeIndex({onView}) {
   return <section className="knowledge-index" aria-labelledby="knowledge-index-title">
     <h2 id="knowledge-index-title">开发与商业笔记</h2>
     <p>从需求和市场出发，逐步明确受众、玩法与制作方式。</p>
-    <div className="knowledge-index-list">{knowledgeNotes.map(note => <button key={note.key} onClick={() => onView(note.key)}>
+    <div className="knowledge-index-list"><button onClick={() => onView('plan')}>
+      <span><strong>90天执行计划</strong><small>经典玩法 × 当下情绪 × 一条规则：按天验证游戏、内容、工具与课程。</small></span><CalendarDays size={18}/>
+    </button>{knowledgeNotes.map(note => <button key={note.key} onClick={() => onView(note.key)}>
       <span><strong>{note.label}</strong><small>{note.description}</small></span><ArrowRight size={18}/>
     </button>)}</div>
   </section>;

@@ -1,0 +1,51 @@
+.plan-page { width: 100%; padding: 32px 30px 72px; color: var(--ink); }
+.plan-page-nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 1060px; margin: 0 auto; font-size: 14px; color: var(--muted); }
+.plan-content { max-width: 1060px; margin: 0 auto; overflow-wrap: anywhere; }
+.plan-content h1 { font-size: 36px; line-height: 1.4; margin: 24px 0 15px; }
+.plan-content h1 + p { font-size: 19px; line-height: 1.85; color: #465363; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.plan-content h2 { font-size: 27px; line-height: 1.5; margin: 42px 0 16px; padding-top: 30px; border-top: 1px solid var(--line); scroll-margin-top: 84px; }
+.plan-content h3 { font-size: 22px; line-height: 1.5; margin: 38px 0 14px; scroll-margin-top: 82px; }
+.plan-content p, .plan-content li { font-size: 18px; line-height: 1.9; color: #3e4855; }
+.plan-content p { margin: 13px 0; }
+.plan-content ul, .plan-content ol { padding-left: 26px; }
+.plan-content li + li { margin-top: 8px; }
+.plan-content strong { color: #263423; }
+.plan-week-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 30px; }
+.plan-week-nav button { min-height: 42px; min-width: 76px; padding: 8px 12px; background: #fff; border: 1px solid #cfd8b6; border-radius: 6px; color: #415d25; font-size: 15px; font-weight: 600; cursor: pointer; }
+.plan-week-nav button:hover, .plan-week-nav button:focus-visible { background: #edf4d6; border-color: #97aa68; }
+.plan-day-table, .plan-content .knowledge-table-wrap { overflow-x: auto; margin: 20px 0 30px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.plan-content table { width: 100%; border-collapse: collapse; text-align: left; table-layout: fixed; }
+.plan-content table th, .plan-content table td { padding: 16px 18px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 16px; line-height: 1.75; color: #344151; }
+.plan-content table thead { background: #edf0f4; }
+.plan-content table thead th { font-weight: 700; color: #273242; }
+.plan-content table tbody tr:last-child > * { border-bottom: 0; }
+.plan-content table tbody tr:nth-child(even) { background: #fafbfd; }
+.plan-content table tbody th, .plan-day-table table tbody td:first-child { color: #40582c; font-weight: 700; }
+.plan-day-table table th:first-child { width: 72px; }
+.plan-day-table table th:nth-child(2) { width: 45%; }
+.plan-content .knowledge-table-wrap table { min-width: 540px; }
+.plan-footer { max-width: 1060px; margin: 54px auto 0; padding-top: 24px; border-top: 1px solid var(--line); }
+@media (max-width: 760px) {
+  .plan-page { padding: 24px 18px 56px; }
+  .plan-page-nav { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .plan-content h1 { font-size: 29px; line-height: 1.45; margin-top: 20px; }
+  .plan-content h1 + p { font-size: 17px; }
+  .plan-content h2 { font-size: 24px; margin-top: 34px; padding-top: 24px; }
+  .plan-content h3 { font-size: 20px; margin-top: 32px; }
+  .plan-content p, .plan-content li { font-size: 17px; }
+  .plan-week-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+  .plan-week-nav button { min-width: 0; font-size: 14px; }
+  .plan-day-table { overflow: visible; }
+  .plan-day-table table, .plan-day-table tbody, .plan-day-table tr, .plan-day-table tbody th, .plan-day-table td { display: block; width: 100%; }
+  .plan-day-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .plan-day-table tbody tr { border-bottom: 1px solid var(--line); padding: 14px 16px 17px; background: #fff; }
+  .plan-day-table tbody tr:nth-child(even) { background: #fafbfd; }
+  .plan-day-table tbody tr:last-child { border-bottom: 0; }
+  .plan-day-table table tbody th, .plan-day-table table td { border: 0; padding: 0; font-size: 16px; line-height: 1.75; }
+  .plan-day-table table tbody td:first-child, .plan-day-table table tbody th { margin-bottom: 11px; font-size: 18px; }
+  .plan-day-table table td + td { margin-top: 14px; }
+  .plan-day-table table td::before { display: block; font-size: 13px; color: #667642; font-weight: 700; margin-bottom: 2px; }
+  .plan-day-table table td:nth-child(2)::before { content: '游戏 / 选品'; }
+  .plan-day-table table td:nth-child(3)::before { content: '内容 / 验证与产出'; }
+  .plan-content .knowledge-table-wrap table { min-width: 540px; }
+}
