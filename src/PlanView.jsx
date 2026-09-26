@@ -37,7 +37,7 @@ const sections = markdown.renderer.render(tokens.slice(firstSection), markdown.o
 
 function WeekNavigation() {
   return <nav className="plan-week-nav" aria-label="计划周次">
-    {weeks.map(({id, label}) => <button type="button" key={id} onClick={() => document.getElementById(id)?.scrollIntoView({block: 'start'})}>{label}</button>)}
+    {weeks.map(({id, label}) => <button type="button" key={id} onClick={() => document.getElementById(id)?.scrollIntoView({behavior: 'instant', block: 'start'})}>{label}</button>)}
   </nav>;
 }
 
