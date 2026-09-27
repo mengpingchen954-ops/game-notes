@@ -7,19 +7,37 @@ import './styles.css';
 
 import KnowledgeView from './KnowledgeView';
 import PlanView from './PlanView';
+import HotspotLab from './HotspotLab';
+import {topicForKey} from './hotspotData';
 import {knowledgeNotes} from './knowledge';
 import './knowledge.css';
 import './plan.css';
+import './hotspotLab.css';
 import './taste-overrides.css';
+
+function viewFromHash(hash) {
+ const value=hash.replace(/^#/,'');
+ if(value==='plan') return 'plan';
+ if(value==='lab') return 'lab';
+ if(value.startsWith('lab/')){let key='';try{key=decodeURIComponent(value.slice(4));}catch{return 'lab';}return topicForKey(key)?`lab:${key}`:'lab';}
+ return null;
+}
+
+function hashForView(view) {
+ if(view==='plan') return '#plan';
+ if(view==='lab') return '#lab';
+ if(view.startsWith('lab:')&&topicForKey(view.slice(4))) return `#lab/${encodeURIComponent(view.slice(4))}`;
+ return '';
+}
 
 function App(){
  const [initial]=useState(loadLibrary);const [records,setRecords]=useState(initial.records);const [error,setError]=useState(initial.error);
- const [view,setView]=useState(window.location.hash==='#plan'?'plan':initial.records.length?'detail':'library');const [activeId,setActiveId]=useState(initial.records[0]?.id);const [editing,setEditing]=useState(null);const [dirty,setDirty]=useState(false);const [mobile,setMobile]=useState(false);const [toast,setToast]=useState('');const [confirm,setConfirm]=useState(null);const fileInput=useRef(null);
+ const [view,setView]=useState(viewFromHash(window.location.hash)|| (initial.records.length?'detail':'library'));const [activeId,setActiveId]=useState(initial.records[0]?.id);const [editing,setEditing]=useState(null);const [dirty,setDirty]=useState(false);const [mobile,setMobile]=useState(false);const [toast,setToast]=useState('');const [confirm,setConfirm]=useState(null);const fileInput=useRef(null);
  const record=records.find(r=>r.id===activeId);
  useEffect(()=>{if(!toast)return;const t=setTimeout(()=>setToast(''),4500);return()=>clearTimeout(t);},[toast]);
  useEffect(()=>{const handler=e=>{if(dirty){e.preventDefault();e.returnValue='';}};window.addEventListener('beforeunload',handler);return()=>window.removeEventListener('beforeunload',handler);},[dirty]);
- useEffect(()=>{const syncPlan=()=>{if(window.location.hash==='#plan'){setView('plan');setEditing(null);setMobile(false);}else setView(current=>current==='plan'?'library':current);};window.addEventListener('hashchange',syncPlan);window.addEventListener('popstate',syncPlan);return()=>{window.removeEventListener('hashchange',syncPlan);window.removeEventListener('popstate',syncPlan);};},[]);
- function updatePlanUrl(v){if(v==='plan'&&window.location.hash!=='#plan')window.location.hash='plan';else if(v!=='plan'&&window.location.hash==='#plan'){const url=new URL(window.location.href);url.hash='';window.history.pushState(null,'',url);}}
+ useEffect(()=>{const syncRoute=()=>{const route=viewFromHash(window.location.hash);if(route){setView(route);setEditing(null);setMobile(false);}else setView(current=>current==='plan'||current==='lab'||current.startsWith('lab:')?'library':current);};window.addEventListener('hashchange',syncRoute);window.addEventListener('popstate',syncRoute);return()=>{window.removeEventListener('hashchange',syncRoute);window.removeEventListener('popstate',syncRoute);};},[]);
+ function updatePlanUrl(v){const hash=hashForView(v);if(window.location.hash===hash)return;if(hash)window.location.hash=hash;else{const url=new URL(window.location.href);url.hash='';window.history.pushState(null,'',url);}}
  function persist(next){if(initial.error&&error){setToast('请先导出原始数据并修复备份，避免覆盖现有资料。');return false;}try{localStorage.setItem(STORAGE_KEY,backup(next));setRecords(next);setError('');return true;}catch{setError('保存失败：浏览器存储空间不足或不可用。请保留当前编辑内容，并导出备份。');return false;}}
  function navigate(action){if(dirty){setConfirm({title:'放弃未保存的修改？',body:'这次编辑尚未保存。返回继续编辑，或放弃修改后离开。',confirmLabel:'放弃修改',danger:true,onConfirm:()=>{setDirty(false);setEditing(null);setConfirm(null);action();}});}else action();}
  function changeView(v){navigate(()=>{updatePlanUrl(v);setView(v);setEditing(null);setMobile(false);window.scrollTo(0,0);});}
@@ -35,10 +53,11 @@ function App(){
  useEffect(()=>{function key(e){const target=e.target;if(target instanceof HTMLElement&&(target.matches('input,textarea,select')||target.isContentEditable))return;if(e.key.toLowerCase()==='n'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();create();}}window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);});
  const note=knowledgeNotes.find(item=>item.key===view);
  const studioTitle=note?.title||studioModules.find(item=>item.key===view)?.title;
- const viewTitle=view==='detail'?record?.title:view==='editor'?'编辑分析':view==='plan'?'90天打卡':studioTitle||(view==='template'?'分析模板':view==='favorites'?'我的收藏':view==='drafts'?'分析草稿':'全部分析');
+ const labTopic=view.startsWith('lab:')?topicForKey(view.slice(4)):null;
+ const viewTitle=view==='detail'?record?.title:view==='editor'?'编辑分析':view==='plan'?'90天打卡':view==='lab'||labTopic?'热点实验室':studioTitle||(view==='template'?'分析模板':view==='favorites'?'我的收藏':view==='drafts'?'分析草稿':'全部分析');
  return <div className="app"><Sidebar records={records} view={view} activeId={activeId} onView={changeView} onSelect={select} onNew={create} onImport={()=>fileInput.current.click()} onExport={exportAll} mobile={mobile} onClose={()=>setMobile(false)}/><main className="main"><header className="topbar"><button className="icon-button menu-toggle" aria-label="打开导航" onClick={()=>setMobile(true)}><Menu size={21}/></button><div className="breadcrumbs"><button onClick={()=>changeView('library')}>我的工作台</button><ChevronRight size={14}/><span>{viewTitle}</span></div><div className="topbar-actions">{view==='detail'&&record?<><span className="saved-indicator"><Check size={13}/>已保存</span><button className="secondary export-top" onClick={()=>download(markdown(record),record.title.replace(/[\\/:*?"<>|]/g,'-')+'.md','text/markdown')}><Download size={15}/>导出</button><button className="primary" onClick={edit}><FilePenLine size={15}/>编辑分析</button></>:<span className="topbar-small">个人游戏设计资料库</span>}</div></header>
  {error&&<div role="alert" className="error-banner"><AlertCircle size={18}/><span>{error}</span><button onClick={exportAll}>导出当前资料</button></div>}
-  {view==='editor'&&editing?<Editor key={editing.record.id} {...editing} onSave={save} onCancel={()=>navigate(()=>{setEditing(null);setView(record?'detail':'library');})} onDirty={()=>setDirty(true)}/>:view==='plan'?<PlanView onDirtyChange={setDirty}/>:note?<KnowledgeView key={note.key} note={note} onView={changeView}/>:view==='template'?<TemplateView onNew={create}/>:studioModules.some(item=>item.key===view)?<StudioGuide mode={view} onToast={setToast} onView={changeView}/>:view==='detail'&&record?<GameDetail record={record} onEdit={edit} onFavorite={()=>{if(persist(records.map(r=>r.id===record.id?{...r,favorite:!r.favorite}:r)))setToast(record.favorite?'已取消收藏':'已加入收藏');}} onMarkdown={()=>download(markdown(record),record.title.replace(/[\\/:*?"<>|]/g,'-')+'.md','text/markdown')} onDelete={remove} onDuplicate={duplicate}/>:<LibraryView key={view} records={records} mode={view} onSelect={select} onNew={create}/>}
+  {view==='editor'&&editing?<Editor key={editing.record.id} {...editing} onSave={save} onCancel={()=>navigate(()=>{setEditing(null);setView(record?'detail':'library');})} onDirty={()=>setDirty(true)}/>:view==='plan'?<PlanView onDirtyChange={setDirty}/>:view==='lab'||labTopic?<HotspotLab topicKey={labTopic?.key} onView={changeView}/>:note?<KnowledgeView key={note.key} note={note} onView={changeView}/>:view==='template'?<TemplateView onNew={create}/>:studioModules.some(item=>item.key===view)?<StudioGuide mode={view} onToast={setToast} onView={changeView}/>:view==='detail'&&record?<GameDetail record={record} onEdit={edit} onFavorite={()=>{if(persist(records.map(r=>r.id===record.id?{...r,favorite:!r.favorite}:r)))setToast(record.favorite?'已取消收藏':'已加入收藏');}} onMarkdown={()=>download(markdown(record),record.title.replace(/[\\/:*?"<>|]/g,'-')+'.md','text/markdown')} onDelete={remove} onDuplicate={duplicate}/>:<LibraryView key={view} records={records} mode={view} onSelect={select} onNew={create}/>}
  <input ref={fileInput} type="file" accept=".json,application/json" hidden aria-label="导入备份文件" onChange={importFile}/></main>{toast&&<div className="toast" role="status"><Check size={17}/><span>{toast}</span>{undo&&toast==='分析已删除'&&<button onClick={()=>{if(persist([undo,...records])){setUndo(null);setToast('已恢复分析');}}}>撤销</button>}<button aria-label="关闭提示" onClick={()=>setToast('')}><X size={14}/></button></div>}{confirm&&<ConfirmDialog {...confirm} onCancel={()=>setConfirm(null)}/>}</div>;
 }
 createRoot(document.getElementById('root')).render(<App/>);
