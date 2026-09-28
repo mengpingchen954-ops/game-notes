@@ -36,6 +36,7 @@ npm run build
 ## 神仙考核策划
 
 - [《天庭考核：今日宜飞升》详细 GDD](docs/heavenly-exam-gdd.md)
+- [抓马升级策划](docs/heavenly-exam-drama-upgrade.md)
 - [世界观转向建议](docs/heavenly-exam-direction.md)
 - [网络梗与喜剧包装策划](docs/no-fighting-humor-design.md)
 - [原百艺擂台大会方案](docs/no-fighting-tournament-gdd.md)
