@@ -36,7 +36,7 @@ npm run build
 ## 神仙考核策划
 
 - [《天庭考核：今日宜飞升》详细 GDD](docs/heavenly-exam-gdd.md)
-- [抓马 × 玩法最终整合策划](docs/heavenly-exam-master-plan.md)
+- [《天庭考核：今日宜飞升》最终整合主策划](docs/heavenly-exam-master-plan.md)
 - [经典益智玩法借鉴与落地规则](docs/heavenly-exam-classic-reference-design.md)
 - [玩法机制设计](docs/heavenly-exam-mechanics.md)
 - [抓马升级策划](docs/heavenly-exam-drama-upgrade.md)
