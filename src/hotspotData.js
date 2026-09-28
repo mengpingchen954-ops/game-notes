@@ -18,7 +18,7 @@ export const hotspotGroups = [
     key: 'production', number: '04', title: '生产与资产',
     description: '把热点观察变成一个人可以持续运行的工具和管线。'
   },
-  {key: 'philosophy', number: '05', title: '思想小游戏', description: '用简单操作承载思想：设计方法、七款玩法原型与首作验证。'}
+  {key: 'philosophy', number: '05', title: '思想小游戏', description: '用简单操作承载思想：设计方法、七款玩法原型、20个世界观对比与首作验证。'}
 ];
 
 export const hotspotTopics = [

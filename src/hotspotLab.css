@@ -40,7 +40,8 @@
 .lab-detail-header .lab-topic-tags { margin-top: 17px; }
 .lab-detail-layout { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 48px; align-items: start; margin-top: 30px; }
 .lab-article { min-width: 0; max-width: 920px; }
-.lab-article-section { padding: 0 0 28px; margin-bottom: 29px; border-bottom: 1px solid var(--line); }
+.lab-article-section { padding: 0 0 28px; margin-bottom: 29px; border-bottom: 1px solid var(--line); scroll-margin-top: 96px; }
+.lab-article-section:focus-visible { outline: 2px solid #9ab94c; outline-offset: 5px; }
 .lab-article-section h2 { margin: 0 0 14px; font-size: 24px; line-height: 1.45; }
 .lab-article-section p, .lab-article-section li { color: #394657; font-size: 17px; line-height: 1.9; }
 .lab-article-section p { margin: 11px 0; }
@@ -63,7 +64,8 @@
 .lab-checklist h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; color: #405c2c; font-size: 20px; }
 .lab-checklist ul { margin: 0; padding-left: 22px; }
 .lab-checklist li { color: #394b35; font-size: 16px; line-height: 1.8; }
-.lab-aside { min-width: 0; padding-left: 22px; border-left: 1px solid var(--line); position: sticky; top: 24px; }
+.lab-aside { min-width: 0; padding-left: 22px; border-left: 1px solid var(--line); position: sticky; top: 96px; max-height: calc(100dvh - 120px); overflow-y: auto; }
+.lab-contents-label { margin-top: 22px; }
 .lab-aside-label { margin-bottom: 10px; color: var(--muted); font-size: 13px; font-weight: 800; }
 .lab-aside nav { display: grid; gap: 4px; }
 .lab-aside nav button { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 10px 8px; border: 0; border-left: 3px solid transparent; background: transparent; color: #596573; text-align: left; font: inherit; cursor: pointer; }
@@ -96,7 +98,7 @@
   .lab-footer { align-items: stretch; flex-direction: column; gap: 15px; }
   .lab-footer button { align-self: flex-start; }
   .lab-detail-layout { display: block; margin-top: 23px; }
-  .lab-aside { margin-top: 31px; padding: 22px 0 0; border-top: 1px solid var(--line); border-left: 0; position: static; }
+  .lab-aside { margin-top: 31px; padding: 22px 0 0; border-top: 1px solid var(--line); border-left: 0; position: static; max-height: none; overflow-y: visible; }
   .lab-article-section h2 { font-size: 22px; }
   .lab-article-section p, .lab-article-section li { font-size: 16px; }
   .lab-article-section blockquote { font-size: 16px; }

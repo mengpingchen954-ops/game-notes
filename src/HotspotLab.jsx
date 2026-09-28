@@ -17,8 +17,8 @@ function ArrowUpRightIcon() {
   return <ArrowRight size={18} aria-hidden="true"/>;
 }
 
-function SectionContent({section}) {
-  return <section className="lab-article-section">
+function SectionContent({section, id}) {
+  return <section className="lab-article-section" id={id} tabIndex={-1}>
     <h2>{section.title}</h2>
     {section.callout && <blockquote>{section.callout.split('\n').map((line, index) => <span key={line}>{index > 0 && <br/>}{line}</span>)}</blockquote>}
     {section.paragraphs?.map(paragraph => <p key={paragraph}>{paragraph}</p>)}
@@ -64,9 +64,16 @@ function TopicDetail({topic, onView}) {
   const group = hotspotGroups.find(item => item.key === topic.group);
   const siblingTopics = topicsForGroup(topic.group);
   const Icon = groupIcons[topic.group];
+  const contents = (topic.contents ?? []).map(item => ({...item, index: topic.sections.findIndex(section => section.title === item.sectionTitle)})).filter(item => item.index >= 0);
+  const jumpToSection = index => {
+    const section = document.getElementById(`${topic.key}-section-${index}`);
+    section?.focus({preventScroll: true});
+    section?.scrollIntoView({behavior: 'instant', block: 'start'});
+  };
   return <div className="lab-module lab-detail">
     <button type="button" className="lab-back" onClick={() => onView('lab')}><ArrowLeft size={17}/>返回热点实验室</button>
     <header className="lab-detail-header"><div className="lab-eyebrow"><Icon size={16}/>{group.number} / {group.title} · {topic.label}</div><h1>{topic.title}</h1><p>{topic.summary}</p><div className="lab-topic-tags">{topic.tags.map(tag => <em key={tag}>{tag}</em>)}</div></header>
-    <div className="lab-detail-layout"><article className="lab-article">{topic.sections.map(section => <SectionContent section={section} key={section.title}/>)}<section className="lab-checklist"><h2><CheckCircle2 size={20}/>本主题行动清单</h2><ul>{topic.checklist.map(item => <li key={item}>{item}</li>)}</ul></section></article><aside className="lab-aside"><div className="lab-aside-label">同组主题</div><nav>{siblingTopics.map(item => <button type="button" className={item.key === topic.key ? 'active' : ''} onClick={() => onView(`lab:${item.key}`)} key={item.key}>{item.label}<ArrowRight size={15}/></button>)}</nav><div className="lab-aside-note"><ShieldCheck size={18}/><p>这里的分数、数量和节奏是内部实验工具，不是市场成功保证。</p></div></aside></div>
+    {contents.length > 0 && <nav className="lab-group-jump" aria-label="本页目录">{contents.map(item => <button type="button" key={item.sectionTitle} onClick={() => jumpToSection(item.index)}>{item.label}</button>)}</nav>}
+    <div className="lab-detail-layout"><article className="lab-article">{topic.sections.map((section, index) => <SectionContent section={section} id={`${topic.key}-section-${index}`} key={section.title}/>)}<section className="lab-checklist"><h2><CheckCircle2 size={20}/>本主题行动清单</h2><ul>{topic.checklist.map(item => <li key={item}>{item}</li>)}</ul></section></article><aside className="lab-aside"><div className="lab-aside-label">同组主题</div><nav>{siblingTopics.map(item => <button type="button" className={item.key === topic.key ? 'active' : ''} onClick={() => onView(`lab:${item.key}`)} key={item.key}>{item.label}<ArrowRight size={15}/></button>)}</nav>{contents.length > 0 && <><div className="lab-aside-label lab-contents-label">本页目录</div><nav aria-label="侧栏本页目录">{contents.map(item => <button type="button" key={item.sectionTitle} onClick={() => jumpToSection(item.index)}>{item.label}</button>)}</nav></>}<div className="lab-aside-note"><ShieldCheck size={18}/><p>这里的分数、数量和节奏是内部实验工具，不是市场成功保证。</p></div></aside></div>
   </div>;
 }
