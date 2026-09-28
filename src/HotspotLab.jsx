@@ -60,6 +60,7 @@ function GroupOverview({group, onView}) {
       <div className="lab-eyebrow"><Icon size={16}/>独立模块</div>
       <h1>{group.title}</h1><p>{group.description}</p>
     </header>
+    {group.key === 'philosophy' && <section className="lab-playable" aria-label="已选方向试玩"><div><span>已选方向 · 首个可玩原型</span><h2>天下第一，禁止动武</h2><p>第一局「请君出圈」：用两面请战旗，引高手自己走出界线。支持点击、触屏、推演与重试。</p></div><a className="primary" href={`${import.meta.env.BASE_URL}play/no-fighting/`}>开始试玩<ArrowRight size={17}/></a></section>}
     <section aria-label={`${group.title}主题`} className="lab-module-topics">
       <div className="lab-topic-grid">{topicsForGroup(group.key).map(topic => <TopicCard topic={topic} onOpen={key => onView(`lab:${key}`)} key={topic.key}/>)}</div>
     </section>
