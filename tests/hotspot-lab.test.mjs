@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {hotspotGroups, hotspotTopics, topicForKey, topicsForGroup} from '../src/hotspotData.js';
 
-test('hotspot lab is divided into four groups with three topics each', () => {
-  assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production']);
-  assert.equal(hotspotTopics.length, 12);
+test('hotspot lab is divided into five groups with three topics each', () => {
+  assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy']);
+  assert.equal(hotspotTopics.length, 15);
   assert.equal(new Set(hotspotTopics.map(topic => topic.key)).size, hotspotTopics.length);
   for (const group of hotspotGroups) {
     const topics = topicsForGroup(group.key);

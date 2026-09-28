@@ -2,7 +2,7 @@ import React from 'react';
 import {ArrowLeft, ArrowRight, BarChart3, BookOpen, CalendarClock, CheckCircle2, Flame, Gamepad2, Layers3, Lightbulb, Play, Radar, ShieldCheck, Sparkles, Target, Workflow} from 'lucide-react';
 import {hotspotGroups, hotspotTopics, topicForKey, topicsForGroup} from './hotspotData';
 
-const groupIcons = {selection: Target, translation: Lightbulb, validation: Play, production: Workflow};
+const groupIcons = {selection: Target, translation: Lightbulb, validation: Play, production: Workflow, philosophy: BookOpen};
 
 function TopicCard({topic, onOpen}) {
   return <button type="button" className="lab-topic-card" onClick={() => onOpen(topic.key)}>

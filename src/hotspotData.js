@@ -1,4 +1,6 @@
 // 选品与热点实验室的内容蓝图。这里记录方法和实验规则，不伪装成实时热榜。
+import {philosophyLabTopics} from './philosophyLab.js';
+
 export const hotspotGroups = [
   {
     key: 'selection', number: '01', title: '方向与选品',
@@ -15,10 +17,12 @@ export const hotspotGroups = [
   {
     key: 'production', number: '04', title: '生产与资产',
     description: '把热点观察变成一个人可以持续运行的工具和管线。'
-  }
+  },
+  {key: 'philosophy', number: '05', title: '思想小游戏', description: '用简单操作承载思想：设计方法、七款玩法原型与首作验证。'}
 ];
 
 export const hotspotTopics = [
+  ...philosophyLabTopics,
   {
     key: 'validation-funnel', group: 'selection', label: '验证漏斗',
     title: '先验证想看，再验证想玩，最后验证愿意回来',
