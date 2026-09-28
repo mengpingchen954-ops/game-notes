@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <meta name="theme-color" content="#eee8da" />
-    <meta name="description" content="天下第一，禁止动武。摆下两面请战旗，让高手自己走出擂台。一场不用手速的武林小局。" />
+    <meta name="description" content="天下第一，禁止动武。先摆下一面请战旗，让高手自己走出擂台，再挑战绕屏风。一场不用手速的武林小局。" />
     <title>天下第一，禁止动武 · 请君出圈</title>
   </head>
   <body>
@@ -17,11 +17,11 @@
       <main class="game-shell">
         <header class="game-heading">
           <div class="title-lockup"><span class="seal" aria-hidden="true">武林<br>大会</span><div><h1>天下第一<span>禁止动武</span></h1><p>拳脚收起来，脑子动起来。</p></div></div>
-          <div class="round"><span>初试 · 第一局</span><strong>请君出圈</strong></div>
+          <div class="round"><span id="round-label">教学局 · 第一步</span><strong>请君出圈</strong></div>
         </header>
         <div class="play-layout">
           <section class="arena-panel" aria-label="请君出圈棋盘">
-            <div class="arena-caption"><span><i class="red-dot"></i>点格放旗 · 引掌门走出退场口</span><span id="phase-label">布置中</span></div>
+            <div class="arena-caption"><span><i class="red-dot"></i><span id="arena-caption-text">先点亮的旗 · 看他自己出界</span></span><span id="phase-label">布置中</span></div>
             <div class="stage" id="stage">
               <div id="game-canvas" aria-hidden="true"></div>
               <div id="board-input" role="group" aria-label="点击格子放置请战旗，重复点击收回"></div>
@@ -34,17 +34,18 @@
                   <p id="result-copy"></p>
                   <div class="result-quote" id="result-quote"></div>
                   <button class="primary-button" id="result-retry">再试一种走法 <span>↗</span></button>
+                  <a class="primary-button result-advanced" id="advanced-link" href="?level=advanced" hidden>挑战进阶关：绕屏风 <span>↗</span></a>
                   <button class="plain-button" id="result-review">回看这盘棋</button>
                 </div>
               </div>
             </div>
-            <div class="dialogue" aria-live="polite"><span class="speaker" id="speaker">岳不挪</span><p id="dialogue">“堂堂掌门，还能让你两面小旗骗出圈？”</p></div>
+            <div class="dialogue" aria-live="polite"><span class="speaker" id="speaker">岳不挪</span><p id="dialogue">“第一次上场，先学会请人走到出口。”</p></div>
           </section>
           <aside class="match-panel">
-            <div class="objective"><span class="section-label">本局胜负</span><h2>让他自己<br>走出界线。</h2><p>不能碰人，不能伤人。<br>只借两面旗，请高手挪个步。</p></div>
+            <div class="objective"><span class="section-label">本局胜负</span><h2>让他自己<br>走出界线。</h2><p id="objective-copy">不能碰人，不能伤人。<br>先把旗插在亮起的退场口。</p></div>
             <div class="opponent"><div class="opponent-top"><span>对手 · 铁面掌门</span><strong>岳不挪</strong></div><p>最爱面子。有旗挑战，必赴约。</p></div>
-            <ol class="rules"><li><b>一</b><span>只看得见<strong>同一横排或竖列</strong>的旗，屏风会挡住视线。</span></li><li><b>二</b><span>走到旗边便收旗，再找下一面；<strong>不主动绕路</strong>。</span></li><li><b>三</b><span>踏入右侧任一<strong>退场口</strong>，就算出界。</span></li></ol>
-            <div class="flag-inventory"><div><span class="section-label">你的道具</span><strong>请战旗</strong></div><div class="flag-slots" aria-hidden="true"><i id="flag-slot-0">旗</i><i id="flag-slot-1">旗</i></div><span id="flag-count">已放 0 / 2</span></div>
+            <ol class="rules"><li><b>一</b><span id="rule-1">只看得见<strong>同一横排或竖列</strong>的旗，屏风会挡住视线。</span></li><li><b>二</b><span id="rule-2">走到旗边便收旗，再找下一面；<strong>不主动绕路</strong>。</span></li><li><b>三</b><span id="rule-3">踏入右侧任一<strong>退场口</strong>，就算出界。</span></li></ol>
+            <div class="flag-inventory"><div><span class="section-label">你的道具</span><strong>请战旗</strong></div><div class="flag-slots" aria-hidden="true"><i id="flag-slot-0">旗</i><i id="flag-slot-1">旗</i></div><span id="flag-count">已放 0 / 1</span></div>
             <p class="placement-note" id="placement-note" role="status">点击擂台空格放旗，再点一次收回。</p>
             <button id="start" class="primary-button" disabled>鸣锣，开局 <span>↗</span></button>
             <div class="tools"><button id="preview" aria-pressed="false" disabled>推演路线</button><button id="undo" disabled>撤销一步</button><button id="reset">重新布置</button></div>
@@ -55,7 +56,7 @@
         </div>
         <footer class="game-footer"><span>单关试玩 · 约 1—3 分钟</span><p>看清局势，再借一分力。</p><span>支持点击、触屏与键盘</span></footer>
       </main>
-      <div class="mobile-dock"><button id="mobile-start" class="primary-button" disabled>先点棋盘，放下请战旗 <span>0 / 2</span></button></div>
+      <div class="mobile-dock"><button id="mobile-start" class="primary-button" disabled>先点棋盘，放下请战旗 <span>0 / 1</span></button></div>
     </div>
     <script type="module" src="../../src/no-fighting/main.js"></script>
   </body>

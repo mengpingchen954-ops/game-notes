@@ -1,17 +1,37 @@
 import './style.css';
-import {START, SIZE, MAX_FLAGS, canPlace, isFloor, isScreen, isExit, sameCell, simulate} from './model.js';
+import {LEVELS, SIZE, canPlace, isFloor, isScreen, isExit, sameCell, simulate} from './model.js';
 import {createArena, VIEW} from './scene.js';
 
 const $ = id => document.getElementById(id);
+const level = LEVELS[new URLSearchParams(window.location.search).get('level') === 'advanced' ? 'advanced' : 'tutorial'];
+const MAX_FLAGS = level.maxFlags;
 const state = {flags: [], history: [], phase: 'loading', preview: false, hint: 0, sound: false, run: 0};
 let arena;
 let audioContext;
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const hints = [
+const hints = level.key === 'tutorial' ? [
+  '先点右侧圈出来的退场口，放下唯一一面请战旗。',
+  '他只会沿直线赴约；旗就在出口，他一走到那里就算出界。',
+  '看见“先点这里”了吗？这就是本局唯一需要的动作。'
+] : [
   '他不会拐弯找旗，但收走一面旗后，会重新看四周。第一面旗可以替第二面“带路”。',
   '屏风只挡住中间三排，上下两端都能通往退场口。先把掌门引到其中一排。',
   '可以先在掌门正上方的最上排放旗，再在同一排的退场口放旗。下面那条路也值得试试。'
 ];
+
+function applyLevelCopy() {
+  const tutorial = level.key === 'tutorial';
+  $('round-label').textContent = tutorial ? '教学局 · 第一步' : '进阶 · 第二局';
+  $('arena-caption-text').textContent = tutorial ? '先点亮的旗 · 看他自己出界' : '点格放旗 · 引掌门走出退场口';
+  $('dialogue').textContent = tutorial ? '“第一次上场，先学会请人走到出口。”' : '“堂堂掌门，还能让你两面小旗骗出圈？”';
+  $('objective-copy').innerHTML = tutorial ? '不能碰人，不能伤人。<br>先把旗插在亮起的退场口。' : '不能碰人，不能伤人。<br>只借两面旗，请高手挪个步。';
+  $('rule-1').innerHTML = tutorial ? '掌门会沿<strong>同一横排</strong>直奔旗子。' : '只看得见<strong>同一横排或竖列</strong>的旗，屏风会挡住视线。';
+  $('rule-2').innerHTML = tutorial ? '这一局<strong>没有屏风</strong>，只需点亮的出口。' : '走到旗边便收旗，再找下一面；<strong>不主动绕路</strong>。';
+  $('rule-3').innerHTML = tutorial ? '踏入右侧<strong>发亮的退场口</strong>，就算出界。' : '踏入右侧任一<strong>退场口</strong>，就算出界。';
+  $('flag-count').textContent = `已放 0 / ${MAX_FLAGS}`;
+  $('advanced-link').hidden = true;
+  if (!tutorial) $('round-label').textContent = '进阶挑战 · 绕屏风';
+}
 
 function say(speaker, text) {$('speaker').textContent = speaker; $('dialogue').textContent = text;}
 function note(text) {$('placement-note').textContent = text;}
@@ -35,7 +55,7 @@ function renderControls() {
     button.disabled = locked;
     const cell = {x: Number(button.dataset.x), y: Number(button.dataset.y)};
     const index = state.flags.findIndex(flag => sameCell(flag, cell));
-    const name = isScreen(cell) ? '屏风，挡住视线' : sameCell(cell, START) ? '掌门起点，不能放旗' : index >= 0 ? `收回第${index + 1}面请战旗` : isExit(cell) ? '退场口，放置请战旗' : '放置请战旗';
+    const name = isScreen(cell, level) ? '屏风，挡住视线' : sameCell(cell, level.start) ? '掌门起点，不能放旗' : index >= 0 ? `收回第${index + 1}面请战旗` : isExit(cell, level) ? '退场口，放置请战旗' : '放置请战旗';
     button.setAttribute('aria-label', `第${cell.x + 1}列第${cell.y + 1}行，${name}`);
     button.setAttribute('aria-pressed', String(index >= 0));
     button.title = button.getAttribute('aria-label');
@@ -49,7 +69,7 @@ function backToPlanning() {
 function refreshBoard() {
   if (!arena) return;
   arena.setFlags(state.flags);
-  const prediction = state.preview ? simulate(state.flags) : null;
+  const prediction = state.preview ? simulate(state.flags, level) : null;
   arena.setRoute(prediction);
   renderControls();
   if (prediction) {
@@ -59,10 +79,16 @@ function refreshBoard() {
 
 function place(cell) {
   if (!arena || state.phase === 'running' || state.phase === 'loading') return;
-  if (isScreen(cell)) {note('这是屏风：挡住直线视线，也不能放旗。'); say('岳不挪', '“隔着屏风的挑战？我可没看见。”'); return;}
-  if (!canPlace(cell)) {note('掌门站的位置不能放旗，请选一个空格。'); return;}
+  if (isScreen(cell, level)) {note('这是屏风：挡住直线视线，也不能放旗。'); say('岳不挪', '“隔着屏风的挑战？我可没看见。”'); return;}
+  if (!canPlace(cell, level)) {note('掌门站的位置不能放旗，请选一个空格。'); return;}
+  if (level.key === 'tutorial' && !sameCell(cell, level.tutorialTarget)) {
+    note('教学关已经替你圈出答案：请点右侧发亮的退场口。');
+    say('小杂役', '“先别到处插，亮起来的那一格就是出口。”');
+    arena?.setHover(level.tutorialTarget);
+    return;
+  }
   const index = state.flags.findIndex(flag => sameCell(flag, cell));
-  if (index < 0 && state.flags.length >= MAX_FLAGS) {note('两面旗都用上了。点已有的旗收回，或撤销一步。'); return;}
+  if (index < 0 && state.flags.length >= MAX_FLAGS) {note(level.key === 'tutorial' ? '这面旗已经用上了；点它收回，或直接鸣锣。' : '两面旗都用上了。点已有的旗收回，或撤销一步。'); return;}
   backToPlanning();
   state.history.push(state.flags.map(flag => ({...flag})));
   if (index >= 0) state.flags.splice(index, 1);
@@ -74,7 +100,7 @@ function place(cell) {
 
 function createInputs() {
   for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) {
-    if (!isFloor({x, y})) continue;
+    if (!isFloor({x, y}, level)) continue;
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'board-cell'; button.dataset.x = x; button.dataset.y = y;
     button.style.left = `${(VIEW.left + x * VIEW.cell) / VIEW.width * 100}%`;
@@ -82,9 +108,9 @@ function createInputs() {
     button.style.width = `${VIEW.cell / VIEW.width * 100}%`;
     button.style.height = `${VIEW.cell / VIEW.height * 100}%`;
     button.addEventListener('click', () => place({x, y}));
-    button.addEventListener('pointerenter', () => {if (state.phase !== 'running' && canPlace({x, y})) arena?.setHover({x, y});});
+    button.addEventListener('pointerenter', () => {if (state.phase !== 'running' && canPlace({x, y}, level)) arena?.setHover({x, y});});
     button.addEventListener('pointerleave', () => arena?.setHover(null));
-    button.addEventListener('focus', () => {if (canPlace({x, y})) arena?.setHover({x, y});});
+    button.addEventListener('focus', () => {if (canPlace({x, y}, level)) arena?.setHover({x, y});});
     button.addEventListener('blur', () => arena?.setHover(null));
     button.addEventListener('keydown', event => {
       const direction = {ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1]}[event.key];
@@ -112,6 +138,7 @@ function showResult(result) {
   $('result-copy').textContent = result.won ? `用了${state.flags.length}面旗，走了${result.steps.length}步。你没有碰他，只改变了他看见的局面。` : result.reason === 'hidden' ? '下一面旗不在他的直线上，或被屏风挡住。他不会自己绕路寻找。' : '旗已经收完，掌门仍在圈内。试着用另一面旗，把路线接到退场口。';
   $('result-quote').textContent = result.won ? '岳不挪：“我只是出来看看！”' : '岳不挪：“我就说，我一步都不多走。”';
   $('result-retry').firstChild.textContent = result.won ? '再试一种走法 ' : '调整旗位再来 ';
+  $('advanced-link').hidden = !(level.key === 'tutorial' && result.won);
   $('result').hidden = false;
   $('board-input').inert = true;
   document.querySelector('.match-panel').inert = true;
@@ -145,7 +172,7 @@ async function start() {
   closeResult();
   arena.reset();
   arena.setFlags(state.flags);
-  const result = simulate(state.flags), run = ++state.run;
+  const result = simulate(state.flags, level), run = ++state.run;
   state.phase = 'running'; state.preview = false;
   renderControls();
   note('掌门正在赴约。想改布置，可随时点击“重新布置”。');
@@ -167,8 +194,8 @@ async function start() {
   state.phase = 'finished';
   arena.setRoute(result);
   renderControls();
-  say(result.won ? '裁判' : '岳不挪', result.won ? '“双脚出界，本局——小杂役胜！”' : '“看不见的挑战，不算挑战。”');
-  note(result.won ? '这一局赢了。换一条路线，也能请他出圈。' : '可以收回旗调整位置；已经放好的旗会保留。');
+  say(result.won ? '裁判' : '岳不挪', result.won ? (level.key === 'tutorial' ? '“双脚出界！第一步学会了。”' : '“双脚出界，本局——小杂役胜！”') : '“看不见的挑战，不算挑战。”');
+  note(result.won ? (level.key === 'tutorial' ? '教学关完成了。想继续，再去挑战绕屏风。' : '这一局赢了。换一条路线，也能请他出圈。') : '可以收回旗调整位置；已经放好的旗会保留。');
   showResult(result);
 }
 
@@ -179,7 +206,7 @@ function reset() {
   arena.reset();
   state.flags = []; state.history = []; state.phase = 'planning'; state.preview = false;
   note('点击擂台空格放旗，再点一次收回。');
-  say('岳不挪', '“堂堂掌门，还能让你两面小旗骗出圈？”');
+  say('岳不挪', level.key === 'tutorial' ? '“先点右侧亮起的退场口，别急着研究整座擂台。”' : '“堂堂掌门，还能让你两面小旗骗出圈？”');
   refreshBoard();
 }
 
@@ -211,7 +238,7 @@ $('sound').addEventListener('click', () => {
   if (state.sound) gong();
 });
 $('result-retry').addEventListener('click', () => {
-  const won = simulate(state.flags).won;
+  const won = simulate(state.flags, level).won;
   closeResult();
   if (won) reset();
   else {backToPlanning(); state.preview = false; refreshBoard();}
@@ -221,17 +248,19 @@ $('result-review').addEventListener('click', () => {closeResult(); $('reset').fo
 document.querySelector('.result-paper').addEventListener('keydown', event => {
   if (event.key === 'Escape') {closeResult(); $('reset').focus();}
   if (event.key === 'Tab') {
-    const buttons = [$('result-retry'), $('result-review')];
-    if (event.shiftKey && (document.activeElement === buttons[0] || document.activeElement === event.currentTarget)) {event.preventDefault(); buttons[1].focus();}
-    else if (!event.shiftKey && document.activeElement === buttons[1]) {event.preventDefault(); buttons[0].focus();}
+    const buttons = [$('result-retry'), $('advanced-link'), $('result-review')].filter(button => !button.hidden);
+    const index = buttons.indexOf(document.activeElement);
+    if (event.shiftKey && (index <= 0 || document.activeElement === event.currentTarget)) {event.preventDefault(); buttons.at(-1).focus();}
+    else if (!event.shiftKey && index === buttons.length - 1) {event.preventDefault(); buttons[0].focus();}
   }
 });
 
 createInputs();
+applyLevelCopy();
 renderControls();
 const game = createArena('game-canvas', scene => {
   arena = scene; state.phase = 'planning'; $('loading').hidden = true; refreshBoard();
-}, message => {$('loading').textContent = message; $('loading').classList.add('error');});
+}, message => {$('loading').textContent = message; $('loading').classList.add('error');}, level);
 window.addEventListener('pagehide', () => {audioContext?.suspend();});
 // Keep Phaser's lifetime tied to this standalone page; there are no saves or external services.
 window.addEventListener('beforeunload', () => game.destroy(true));

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import {START, SCREENS, EXITS, sameCell} from './model.js';
+import {ADVANCED_LEVEL, sameCell, isExit, isScreen} from './model.js';
 
 export const VIEW = {width: 840, height: 650, left: 140, top: 40, cell: 80};
 export const center = ({x, y}) => ({x: VIEW.left + (x + .5) * VIEW.cell, y: VIEW.top + (y + .5) * VIEW.cell});
@@ -10,9 +10,9 @@ const assets = {
   spectator: new URL('./assets/spectator.svg', import.meta.url).href
 };
 
-export function createArena(parent, onReady, onError) {
+export function createArena(parent, onReady, onError, level = ADVANCED_LEVEL) {
   class ArenaScene extends Phaser.Scene {
-    constructor() { super('arena'); this.flags = []; this.motionResolve = null; this.assetError = false; }
+    constructor() { super('arena'); this.level = level; this.flags = []; this.motionResolve = null; this.assetError = false; }
     preload() {
       this.load.on('loaderror', () => {this.assetError = true; onError('场景素材未能加载，请刷新页面重试。');});
       for (const [key, url] of Object.entries(assets)) this.load.svg(key, url);
@@ -23,7 +23,7 @@ export function createArena(parent, onReady, onError) {
       this.routeLayer = this.add.graphics().setDepth(3);
       this.hoverLayer = this.add.graphics().setDepth(4);
       this.flagLayer = this.add.container(0, 0).setDepth(6);
-      const start = center(START);
+      const start = center(this.level.start);
       this.shadow = this.add.ellipse(start.x, start.y + 19, 61, 20, 0x292e2b, .14).setDepth(8);
       this.champion = this.add.image(start.x, start.y + 19, 'champion').setDisplaySize(81, 103).setOrigin(.5, .82).setDepth(10);
       this.drawName();
@@ -45,22 +45,24 @@ export function createArena(parent, onReady, onError) {
         const p = center({x, y});
         g.fillStyle((x + y) % 2 ? 0xeee6d4 : 0xe7ddc7).fillRect(p.x - 39, p.y - 39, 78, 78);
         g.lineStyle(1, 0xc5b797, .5).strokeRect(p.x - 39, p.y - 39, 78, 78);
-        if (!SCREENS.some(s => sameCell(s, {x, y})) && !sameCell(START, {x, y})) {
+        if (!isScreen({x, y}, this.level) && !sameCell(this.level.start, {x, y})) {
           g.fillStyle(0xa79a79, .55).fillCircle(p.x, p.y + 10, 3);
         }
       }
-      // A broken vermilion perimeter marks two exits on the right.
+      // A broken vermilion perimeter marks the exits on the right.
       g.lineStyle(4, 0xa94f3a, .78);
       g.lineBetween(220, 120, 620, 120).lineBetween(220, 120, 220, 520).lineBetween(220, 520, 620, 520);
-      g.lineBetween(620, 201, 620, 439);
-      for (const exit of EXITS) {
+      for (let y = 1; y <= 5; y++) if (!isExit({x: 6, y}, this.level)) {
+        g.lineBetween(620, 120 + (y - 1) * 80, 620, 120 + y * 80);
+      }
+      for (const exit of this.level.exits) {
         const p = center(exit);
         g.fillStyle(0xc29f59, .25).fillRoundedRect(p.x - 35, p.y - 37, 70, 75, 4);
         g.lineStyle(1, 0xa7894f, .7).strokeRoundedRect(p.x - 35, p.y - 37, 70, 75, 4);
         g.lineStyle(3, 0xac8a46, .6).beginPath().moveTo(p.x - 11, p.y - 8).lineTo(p.x + 2, p.y).lineTo(p.x - 11, p.y + 8).strokePath();
         this.add.text(p.x, p.y + 22, '退场口', {fontFamily: 'Microsoft YaHei, sans-serif', fontSize: '12px', color: '#866d3d'}).setOrigin(.5);
       }
-      for (const screen of SCREENS) {
+      for (const screen of this.level.screens) {
         const p = center(screen);
         this.add.image(p.x, p.y, 'screen').setDisplaySize(75, 78).setDepth(5);
       }
@@ -71,7 +73,14 @@ export function createArena(parent, onReady, onError) {
       this.banner(89, 138, '以\n智\n会\n友');
       this.banner(780, 309, '不\n得\n动\n武');
       this.add.text(77, 473, '观\n战\n席', {fontFamily: 'KaiTi, STKaiti, serif', fontSize: '18px', color: '#8f8b73', lineSpacing: 7}).setOrigin(.5);
-      this.add.text(428, 636, '两面旗，一场不用拳脚的较量。', {fontFamily: 'KaiTi, STKaiti, serif', fontSize: '16px', color: '#8c806a'}).setOrigin(.5);
+      if (this.level.key === 'tutorial') {
+        const target = center(this.level.tutorialTarget);
+        g.lineStyle(3, 0xc29f59, .8).strokeCircle(target.x, target.y, 32);
+        this.add.text(target.x - 11, target.y - 47, '先点这里', {fontFamily: 'Microsoft YaHei, sans-serif', fontSize: '14px', color: '#9b6b2a', backgroundColor: '#f8efd6', padding: {x: 5, y: 3}}).setOrigin(.5);
+        this.add.text(428, 636, '一面旗，先学会借势出圈。', {fontFamily: 'KaiTi, STKaiti, serif', fontSize: '16px', color: '#8c806a'}).setOrigin(.5);
+      } else {
+        this.add.text(428, 636, '两面旗，一场不用拳脚的较量。', {fontFamily: 'KaiTi, STKaiti, serif', fontSize: '16px', color: '#8c806a'}).setOrigin(.5);
+      }
     }
     banner(x, y, text) {
       const g = this.add.graphics();
@@ -80,7 +89,7 @@ export function createArena(parent, onReady, onError) {
       this.add.text(x, y + 13, text, {fontFamily: 'KaiTi, STKaiti, serif', fontSize: '21px', color: '#f0d7a5', lineSpacing: 4}).setOrigin(.5, 0);
     }
     drawName() {
-      const p = center(START);
+      const p = center(this.level.start);
       this.nameLabel = this.add.text(p.x, p.y + 46, '岳不挪', {fontFamily: 'Microsoft YaHei, sans-serif', fontSize: '12px', color: '#34413a', backgroundColor: '#e9dfc8', padding: {x: 5, y: 2}}).setOrigin(.5).setDepth(11);
     }
     setHover(cell) {
@@ -103,7 +112,7 @@ export function createArena(parent, onReady, onError) {
     setRoute(result) {
       this.routeLayer.clear();
       if (!result) return;
-      const route = [START, ...result.steps];
+      const route = [this.level.start, ...result.steps];
       const color = result.won ? 0x4c7565 : 0x9c7850;
       for (let i = 1; i < route.length; i++) {
         const a = center(route[i - 1]), b = center(route[i]);
@@ -111,13 +120,13 @@ export function createArena(parent, onReady, onError) {
         this.routeLayer.fillStyle(color, .9).fillCircle(b.x, b.y + 9, 5);
       }
       if (!result.steps.length) {
-        const p = center(START);
+        const p = center(this.level.start);
         this.routeLayer.lineStyle(3, color, .8).strokeCircle(p.x, p.y + 9, 31);
       }
     }
     reset() {
       this.cancelMotion();
-      const p = center(START);
+      const p = center(this.level.start);
       this.champion.setPosition(p.x, p.y + 19).setAngle(0);
       this.shadow.setPosition(p.x, p.y + 19);
       this.nameLabel.setPosition(p.x, p.y + 46);

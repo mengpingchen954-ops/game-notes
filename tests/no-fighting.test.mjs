@@ -1,6 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {START, SCREENS, EXITS, legalCells, canPlace, isFloor, isScreen, isExit, sameCell, visibleFrom, simulate} from '../src/no-fighting/model.js';
+import {START, SCREENS, EXITS, TUTORIAL_LEVEL, legalCells, canPlace, isFloor, isScreen, isExit, sameCell, visibleFrom, simulate} from '../src/no-fighting/model.js';
+
+test('the tutorial is a one-click win at the highlighted exit', () => {
+  const target = TUTORIAL_LEVEL.tutorialTarget;
+  assert.equal(TUTORIAL_LEVEL.maxFlags, 1);
+  assert.equal(TUTORIAL_LEVEL.screens.length, 0);
+  assert.equal(canPlace(target, TUTORIAL_LEVEL), true);
+  const result = simulate([target], TUTORIAL_LEVEL);
+  assert.equal(result.won, true);
+  assert.equal(result.steps.length, 4);
+  assert.deepEqual(result.position, target);
+});
 
 test('the opponent only sees unobstructed cardinal lines', () => {
   assert.equal(visibleFrom(START, {x: 2, y: 1}), true);

@@ -9,6 +9,7 @@ body{background-image:radial-gradient(#7b695409 .65px,transparent .65px);backgro
 .stage{max-width:840px;margin-inline:auto}
 #board-input{position:absolute;inset:0}
 .mobile-dock{display:none}
+.result-advanced{text-decoration:none;margin-top:8px}
 .seal{display:block;text-align:center;white-space:nowrap;padding-top:7px;line-height:1.05}
 @media(max-width:760px){
   .game-shell{padding-bottom:100px}
