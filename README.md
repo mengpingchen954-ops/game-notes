@@ -33,6 +33,13 @@ npm run build
 
 `main` 分支更新后，GitHub Actions 会运行测试和构建，并自动部署到 GitHub Pages。
 
+## 神仙考核策划
+
+- [《天庭考核：今日宜飞升》详细 GDD](docs/heavenly-exam-gdd.md)
+- [世界观转向建议](docs/heavenly-exam-direction.md)
+- [网络梗与喜剧包装策划](docs/no-fighting-humor-design.md)
+- [原百艺擂台大会方案](docs/no-fighting-tournament-gdd.md)
+
 ## 天下第一，禁止动武
 
 - 完整比赛原型：`/game-notes/play/no-fighting/match.html`
