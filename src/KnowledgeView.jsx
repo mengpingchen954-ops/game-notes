@@ -17,7 +17,7 @@ export default function KnowledgeView({note,onView}) {
     <header className="knowledge-header">
       <button className="guide-link-button" onClick={() => onView('guide')}>返回工作室指南</button>
       <h1>{note.title}</h1><p>{note.description}</p>
-      <small>对话整理 · 2026年9月21日</small>
+      <small>对话整理 · {note.date || '2026年9月21日'}</small>
     </header>
     <div className="knowledge-question"><strong>讨论的问题</strong><p>{note.question}</p></div>
     <div className="knowledge-takeaway"><BookOpen size={20}/><p>{note.takeaway}</p></div>
@@ -32,7 +32,7 @@ export default function KnowledgeView({note,onView}) {
         <tbody>{section.rows.map(row => <tr key={row[0]}>{row.map((cell,j) => j===0?<th scope="row" key={j}>{cell}</th>:<td key={j}>{cell}</td>)}</tr>)}</tbody>
       </table></div>}
     </section>)}
-    <footer className="knowledge-footer"><p>整理范围：从“游戏公司如何从零起步”到“AI 美术”的讨论。内容为对话观点与行动建议；市场表现、平台政策与具体案例需另行核验。</p>
+    <footer className="knowledge-footer"><p>{note.scope || '整理范围：从“游戏公司如何从零起步”到“AI 美术”的讨论。内容为对话观点与行动建议；市场表现、平台政策与具体案例需另行核验。'}</p>
       <nav aria-label="相关阅读">{note.related.map(key => {const related=knowledgeNotes.find(item => item.key===key);return <button className="secondary" key={key} onClick={() => onView(key)}>{related.label}<ArrowRight size={15}/></button>;})}</nav>
     </footer>
   </article>;
