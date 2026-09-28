@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#eee8da" />
+    <meta name="description" content="天下第一，禁止动武 · 三回合完整玩法网页原型。" />
+    <title>天下第一，禁止动武 · 三回合比武</title>
+  </head>
+  <body>
+    <div id="app" class="full-game">
+      <header class="full-masthead">
+        <a class="back-link" href="../../#lab/philosophy">← 返回设计笔记</a>
+        <span class="masthead-note">完整玩法原型 · 三回合智斗</span>
+        <button id="restart" class="plain-button" type="button">重新开局</button>
+      </header>
+      <main class="full-shell">
+        <header class="full-heading">
+          <div><span class="eyebrow">天下第一 · 禁止动武</span><h1>请君出圈</h1><p>不控制对手，只改变他愿意做什么。</p></div>
+          <div class="opponent-badge"><span>本场对手</span><strong>岳不挪</strong><small>铁面掌门 · 面子值高</small></div>
+        </header>
+        <section class="match-strip" aria-label="比赛进度">
+          <div class="step active" data-step="0"><b>01</b><span>引势</span><small>让他自己走</small></div>
+          <i></i><div class="step" data-step="1"><b>02</b><span>拆招</span><small>让他自己说</small></div>
+          <i></i><div class="step" data-step="2"><b>03</b><span>公议</span><small>让裁判点头</small></div>
+          <div class="match-stats"><span><b id="momentum">势 0</b><small>局面主动权</small></span><span><b id="fame">名 0</b><small>观众声望</small></span><span><b id="insight">心 0</b><small>看穿意图</small></span></div>
+        </section>
+
+        <section class="round-panel active-panel" id="round-influence" aria-labelledby="influence-title">
+          <div class="panel-copy"><span class="round-label">第一回合 · 引势局</span><h2 id="influence-title">把请战旗放在他看得见的地方</h2><p>掌门不会拐弯找你。你只需要给他一个值得走过去的理由。</p><div class="rule-note"><b>规则</b><span>旗在出口，他走到旗边就算出界。第一次胜利只需一次点击。</span></div></div>
+          <div class="mini-board-wrap"><div class="mini-board" id="mini-board" role="grid" aria-label="引势棋盘"></div><p id="board-status" class="board-status">请点击右侧发亮的退场口放旗。</p></div>
+          <div class="panel-actions"><button class="primary-button" id="influence-next" type="button" disabled>鸣锣，看他赴约 <span>→</span></button><button class="text-button" id="influence-hint" type="button">听一句场外话</button></div>
+        </section>
+
+        <section class="round-panel" id="round-dialogue" aria-labelledby="dialogue-title" hidden>
+          <div class="panel-copy"><span class="round-label">第二回合 · 拆招局</span><h2 id="dialogue-title">掌门突然逼你正面应战</h2><p id="dialogue-prompt">选一句话，让他自己交出下一步。</p><div class="rule-note"><b>信息</b><span>他的“面子值”很高，正面冲突会让他封闭；示弱可能让他主动示范。</span></div></div>
+          <div class="dialogue-card"><div class="speaker-line"><span>岳不挪</span><small>正在观察你的态度</small></div><blockquote>“你若真有本事，就当面来战！”</blockquote><div class="choice-list" id="dialogue-choices"><button type="button" data-choice="taunt"><strong>正面挑衅</strong><span>让他暴露破绽</span><em>伤面子</em></button><button type="button" data-choice="yield"><strong>以退为进</strong><span>请他先示范一招</span><em>借势</em></button><button type="button" data-choice="ritual"><strong>递上礼帖</strong><span>按大会礼法开局</span><em>守礼</em></button></div><p class="choice-result" id="choice-result" aria-live="polite">先观察他的情绪，再选一句话。</p></div>
+          <div class="panel-actions"><button class="primary-button" id="dialogue-next" type="button" disabled>收下这句回应 <span>→</span></button></div>
+        </section>
+
+        <section class="round-panel" id="round-verdict" aria-labelledby="verdict-title" hidden>
+          <div class="panel-copy"><span class="round-label">第三回合 · 公议局</span><h2 id="verdict-title">最后一招：让裁判承认你赢得正当</h2><p>同一场比赛可以有很多解法，但裁判只接受完整的因果链。</p><div class="rule-note"><b>选择</b><span>从三张证据牌中选两张。规则决定“能不能”，证人决定“大家信不信”。</span></div></div>
+          <div class="evidence-area"><div class="evidence-list" id="evidence-list"><button type="button" data-evidence="rule"><b>法</b><strong>大会条款</strong><span>请战旗属于合法借势</span></button><button type="button" data-evidence="witness"><b>证</b><strong>观众证词</strong><span>掌门是自愿走出界线</span></button><button type="button" data-evidence="promise"><b>约</b><strong>掌门承诺</strong><span>他答应尊重比赛结果</span></button></div><div class="verdict-preview"><span>裁判台 · 组合结果</span><strong id="verdict-line">等待你提交两张证据</strong><p id="verdict-copy">选择越完整，声望越高；只会钻规则空子，观众不会买账。</p></div></div>
+          <div class="panel-actions"><button class="primary-button" id="verdict-next" type="button" disabled>提交规则异议 <span>→</span></button></div>
+        </section>
+
+        <section class="result-panel" id="match-result" hidden aria-live="polite"><div class="result-seal" id="result-seal">胜</div><span class="round-label">裁判落印 · 本场结算</span><h2 id="result-title">不动手，也能赢。</h2><p id="result-copy"></p><div class="result-stats"><span><b id="result-momentum">势 0</b><small>你改变了局面</small></span><span><b id="result-fame">名 0</b><small>你赢得了认同</small></span><span><b id="result-insight">心 0</b><small>你看穿了对手</small></span></div><div class="result-quote" id="result-quote"></div><button class="primary-button" id="play-again" type="button">再打一场 <span>↗</span></button><a class="text-button" href="../../#lab/philosophy">回到思想小游戏模块</a></section>
+
+        <footer class="full-footer"><span>完整玩法原型 · 约 3—5 分钟</span><p id="footer-line">简单操作，复杂后果。</p><span>支持点击、触屏与键盘</span></footer>
+      </main>
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    </div>
+    <script type="module" src="../../src/no-fighting/full-main.js"></script>
+  </body>
+</html>

@@ -60,7 +60,7 @@ function GroupOverview({group, onView}) {
       <div className="lab-eyebrow"><Icon size={16}/>独立模块</div>
       <h1>{group.title}</h1><p>{group.description}</p>
     </header>
-    {group.key === 'philosophy' && <section className="lab-playable" aria-label="已选方向试玩"><div><span>已选方向 · 首个可玩原型</span><h2>天下第一，禁止动武</h2><p>第一局「请君出圈」：先把一面旗插到发亮的退场口；赢了再挑战双旗绕屏风。支持点击、触屏、推演与重试。</p></div><a className="primary" href={`${import.meta.env.BASE_URL}play/no-fighting/`}>开始试玩<ArrowRight size={17}/></a></section>}
+    {group.key === 'philosophy' && <section className="lab-playable" aria-label="已选方向试玩"><div><span>已选方向 · 完整玩法原型</span><h2>天下第一，禁止动武</h2><p>一场比赛包含引势、拆招、公议三回合：先让掌门自己出圈，再用话术和证据赢下裁判。支持点击、触屏与重玩。</p></div><div className="lab-playable-actions"><a className="primary" href={`${import.meta.env.BASE_URL}play/no-fighting/full.html`}>进入完整比赛<ArrowRight size={17}/></a><a className="secondary" href={`${import.meta.env.BASE_URL}play/no-fighting/`}>先试教学关</a></div></section>}
     <section aria-label={`${group.title}主题`} className="lab-module-topics">
       <div className="lab-topic-grid">{topicsForGroup(group.key).map(topic => <TopicCard topic={topic} onOpen={key => onView(`lab:${key}`)} key={topic.key}/>)}</div>
     </section>
