@@ -60,7 +60,7 @@ function GroupOverview({group, onView}) {
       <div className="lab-eyebrow"><Icon size={16}/>独立模块</div>
       <h1>{group.title}</h1><p>{group.description}</p>
     </header>
-    {group.key === 'philosophy' && <section className="lab-playable" aria-label="已选方向试玩"><div><span>已选方向 · 完整比赛原型</span><h2>天下第一，禁止动武</h2><p>一场三回合的擂台智斗：先让掌门自己出圈，再用话术和证据赢下裁判。支持点击、触屏与重玩。</p></div><div className="lab-playable-actions"><a className="primary" href={`${import.meta.env.BASE_URL}play/no-fighting/match.html`}>进入完整比赛<ArrowRight size={17}/></a><a className="secondary" href={`${import.meta.env.BASE_URL}play/no-fighting/`}>先试教学关</a></div></section>}
+    {group.key === 'philosophy' && <section className="lab-playable" aria-label="已选方向试玩"><div><span>已选方向 · 完整比赛原型</span><h2>天庭考核：今日宜飞升</h2><p>三科益智考核串起一桩封神榜缺页案：路线诱导、真假口供、取子博弈，最后把卷宗摆上公开听证。</p></div><div className="lab-playable-actions"><a className="primary" href={`${import.meta.env.BASE_URL}play/heavenly-exam/`}>进入天庭考核<ArrowRight size={17}/></a><a className="secondary" href={`${import.meta.env.BASE_URL}play/no-fighting/match.html`}>旧版完整擂台</a><a className="secondary" href={`${import.meta.env.BASE_URL}play/no-fighting/`}>教学关</a></div></section>}
     <section aria-label={`${group.title}主题`} className="lab-module-topics">
       <div className="lab-topic-grid">{topicsForGroup(group.key).map(topic => <TopicCard topic={topic} onOpen={key => onView(`lab:${key}`)} key={topic.key}/>)}</div>
     </section>
