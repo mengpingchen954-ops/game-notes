@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#eee8da" />
+  <meta name="description" content="天下第一，禁止动武：引势、拆招、公议，一场三回合的完整智斗。" />
+  <title>天下第一，禁止动武 · 完整比赛</title>
+</head>
+<body>
+<div class="match-app">
+  <header class="masthead">
+    <a class="back-link" href="../../#lab/philosophy">← 返回设计笔记</a>
+    <span class="masthead-note">一场不用拳脚的武林大会</span>
+    <button id="restart" class="plain-button" type="button">重新开局</button>
+  </header>
+  <main class="match-shell">
+    <header class="game-heading">
+      <div class="title-lockup"><span class="seal" aria-hidden="true">武林<br>大会</span><div><h1>天下第一<span>禁止动武</span></h1><p>你不控制掌门，你改变他愿意做什么。</p></div></div>
+      <div class="round-title"><span>完整比赛 · 三回合</span><strong>请君出圈</strong></div>
+    </header>
+    <nav class="round-rail" aria-label="比赛进度">
+      <div class="round-step active" aria-current="step"><b>一</b><span>引势</span><small>让他自己走</small></div><i></i>
+      <div class="round-step"><b>二</b><span>拆招</span><small>让他自己说</small></div><i></i>
+      <div class="round-step"><b>三</b><span>公议</span><small>让裁判点头</small></div>
+      <div class="live-stats" aria-label="本场表现"><span><b id="momentum">势 0</b><small>局面</small></span><span><b id="fame">名 0</b><small>声望</small></span><span><b id="insight">心 0</b><small>洞察</small></span></div>
+    </nav>
+    <section class="match-stage" aria-label="比赛场景">
+      <section class="match-scene board-scene" id="board-scene" tabindex="-1" aria-label="第一回合，引势">
+        <div class="scene-head"><span class="scene-label">第一回合 · 引势局</span><span class="scene-status" id="board-status" role="status">布置擂台中</span></div>
+        <div class="board-stage-grid">
+          <div class="arena-board-wrap">
+            <div class="arena-board" id="arena-board" role="group" aria-label="请君出圈擂台">
+              <span class="arena-inscription" aria-hidden="true">点到为止 · 不许动武</span>
+              <div class="board-grid" id="board-grid"></div><img id="champion" class="champion" alt="岳不挪" />
+              <span class="board-exit" aria-hidden="true">退场口 ↓</span><span class="route-line" id="route-line" aria-hidden="true"></span>
+            </div>
+            <p class="board-caption" id="board-caption" role="status">观众：“这位掌门最爱面子。有请战旗，他一定赴约。”</p>
+          </div>
+          <aside class="arena-brief"><span class="brief-label">当前目标</span><h2>让掌门<br>自己走出去。</h2><p>他不会主动绕路。把请战旗插在同一横排的出口，等他自己赴约。</p><div class="rule-chip"><b>不能推人，只能借势</b><span>点击右侧发亮的退场口，再鸣锣。</span></div><button class="primary-button" id="board-start" type="button" disabled>鸣锣，让他赴约 <span>→</span></button><button class="text-button" id="board-hint" type="button">听一句场外话</button></aside>
+        </div>
+      </section>
+      <section class="match-scene duel-scene" id="duel-scene" tabindex="-1" aria-label="第二回合，拆招" hidden>
+        <div class="scene-head"><span class="scene-label">第二回合 · 拆招局</span><span class="scene-status">人已出圈，他还不服</span></div>
+        <div class="duel-stage">
+          <div class="duel-opponent"><img id="duel-champion" alt="岳不挪" /><span class="character-name">岳不挪</span><span class="character-state" id="character-state">不服气 · 等你开口</span></div>
+          <div class="duel-conversation">
+            <div class="speech-bubble" id="speech-bubble" role="status">“停！老夫只是应邀下台，怎么就算输了？你得给我个说法！”</div>
+            <div class="duel-choices" id="duel-choices">
+              <button type="button" data-choice="taunt" aria-pressed="false"><b>正面挑衅</b><span>“自己走的路，大侠也不敢认？”</span><em>激将</em></button>
+              <button type="button" data-choice="yield" aria-pressed="false"><b>以退为进</b><span>“您当然敢认。不如请大伙说句公道话？”</span><em>借势</em></button>
+              <button type="button" data-choice="ritual" aria-pressed="false"><b>先礼后理</b><span>“晚辈先行一礼，请前辈依章赐教。”</span><em>守礼</em></button>
+            </div>
+            <p class="duel-feedback" id="duel-feedback" role="status">只能说一句。想好要他承认什么，再开口。</p>
+          </div>
+        </div>
+        <div class="scene-actions"><button class="primary-button" id="duel-next" type="button" disabled>记下口供，去裁判台 <span>→</span></button></div>
+      </section>
+      <section class="match-scene verdict-scene" id="verdict-scene" tabindex="-1" aria-label="第三回合，公议" hidden>
+        <div class="scene-head"><span class="scene-label">第三回合 · 公议局</span><span class="scene-status">让证据接上刚才的话</span></div>
+        <div class="verdict-stage">
+          <div class="judge-table"><div class="judge-stamp">裁</div><span>裁判台</span><strong id="judge-question">“他是自己走出去的，算不算胜？”</strong><small>请用两张证据回应他的争议。</small></div>
+          <div class="evidence-stage">
+            <div class="evidence-intro"><span>你的证据席</span><p>掌门刚才说：</p><blockquote id="evidence-reminder"></blockquote></div>
+            <div class="evidence-cards" id="evidence-cards">
+              <button type="button" data-evidence="rule" aria-pressed="false"><b>法</b><strong>大会条款</strong><span></span></button>
+              <button type="button" data-evidence="witness" aria-pressed="false"><b>证</b><strong>观众证词</strong><span></span></button>
+              <button type="button" data-evidence="promise" aria-pressed="false"><b>约</b><strong>掌门承诺</strong><span id="promise-copy"></span></button>
+            </div>
+            <p class="evidence-feedback" id="evidence-feedback" role="status">请选择两张证据。</p>
+          </div>
+        </div>
+        <div class="scene-actions"><button class="primary-button" id="verdict-submit" type="button" disabled>递交证据，请裁判落印 <span>→</span></button></div>
+      </section>
+      <section class="match-scene result-scene" id="result-scene" tabindex="-1" aria-label="本场结算" hidden>
+        <div class="result-seal" id="result-seal">胜</div><span class="scene-label" id="result-label">裁判落印 · 本场结算</span>
+        <h2 id="result-title"></h2><p id="result-copy"></p><div class="result-quote" id="result-quote"></div>
+        <p id="result-thought" class="result-thought"></p>
+        <div class="collection" id="collection" aria-label="胜印收集"></div><p id="collection-note" class="collection-note"></p>
+        <div class="result-actions"><button class="primary-button" id="retry-evidence" type="button" hidden>回裁判台，补一张证据</button><button class="primary-button" id="play-again" type="button">换种说法，再辩一局</button></div>
+        <div class="result-links"><a class="text-button" href="./?level=advanced">挑战双旗绕屏风 →</a><a class="text-button" href="../../#lab/philosophy">回到设计笔记</a></div>
+      </section>
+    </section>
+    <footer class="game-footer"><span>三回合 · 三种胜印</span><p id="footer-line">看清局势，再借一分力。</p><span>点击 / 触屏 / 键盘</span></footer>
+  </main>
+  <div class="toast" id="toast" role="status" hidden></div>
+</div>
+<script type="module" src="../../src/no-fighting/match-main.js"></script>
+</body>
+</html>

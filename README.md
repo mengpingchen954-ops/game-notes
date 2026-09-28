@@ -32,3 +32,13 @@ npm run build
 数据备份带版本和字段校验。导入时，同一编号且内容完全相同的条目会跳过；同一编号但内容不同的条目会作为新副本保留，不会静默覆盖。
 
 `main` 分支更新后，GitHub Actions 会运行测试和构建，并自动部署到 GitHub Pages。
+
+## 天下第一，禁止动武
+
+- 完整比赛原型：`/game-notes/play/no-fighting/match.html`
+- 原教学关：`/game-notes/play/no-fighting/`
+- 双旗进阶关：`/game-notes/play/no-fighting/?level=advanced`
+
+完整比赛是一场三回合的独立网页原型：放旗引掌门出圈，选择一句话术，再以两张证据回应他的争议。三种话术分别对应「依法定胜」「借势服人」「以礼成局」。证据不足时可直接补证；结算后可跳过引势回合，尝试另一种说法。
+
+胜印只保存在当前浏览器的 `no-fighting-match-seals-v1` 本地记录中，不影响笔记备份。尚不包含多对手赛季或账号同步。判定逻辑位于 `src/no-fighting/match-model.js`，测试覆盖九种话术与证据组合、缺证提示与重复结算。
