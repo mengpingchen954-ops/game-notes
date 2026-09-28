@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {hotspotGroups, hotspotTopics, topicForKey, topicsForGroup} from '../src/hotspotData.js';
 
-test('hotspot lab is divided into five groups with three topics each', () => {
+test('hotspot lab is divided into five groups, with a standalone heavenly exam module', () => {
   assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy']);
-  assert.equal(hotspotTopics.length, 15);
+  assert.equal(hotspotTopics.length, 16);
   assert.equal(new Set(hotspotTopics.map(topic => topic.key)).size, hotspotTopics.length);
   for (const group of hotspotGroups) {
     const topics = topicsForGroup(group.key);
-    assert.equal(topics.length, 3);
+    assert.equal(topics.length, group.key === 'philosophy' ? 4 : 3);
     assert.ok(group.title && group.description);
     for (const topic of topics) {
       assert.equal(topicForKey(topic.key), topic);
@@ -16,6 +16,10 @@ test('hotspot lab is divided into five groups with three topics each', () => {
       assert.ok(topic.sections.length > 0 && topic.checklist.length > 0);
     }
   }
+  const plan = topicForKey('heavenly-exam-plan');
+  assert.equal(plan.label, '天庭考核主策划');
+  assert.match(JSON.stringify(plan), /封神榜缺页案/);
+  assert.match(JSON.stringify(plan), /公开听证/);
 });
 
 test('tables are structurally complete and the lab covers the agreed evidence chain', () => {

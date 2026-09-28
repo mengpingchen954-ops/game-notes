@@ -1,7 +1,9 @@
 import {worldOpeningSections, worldComparisonSections} from './philosophyWorlds.js';
+import {heavenlyExamPlanTopic} from './heavenlyExamPlan.js';
 
 // 对话中的原创设计提案；玩法尚未实现，时长和范围为验证目标。
 export const philosophyLabTopics = [
+  heavenlyExamPlanTopic,
   {
     key: 'philosophy-method', group: 'philosophy', label: '设计方法',
     title: '让思想进入规则，让操作保持简单',
