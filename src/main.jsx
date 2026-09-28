@@ -8,7 +8,7 @@ import './styles.css';
 import KnowledgeView from './KnowledgeView';
 import PlanView from './PlanView';
 import HotspotLab from './HotspotLab';
-import {topicForKey} from './hotspotData';
+import {groupForKey, topicForKey} from './hotspotData';
 import {knowledgeNotes} from './knowledge';
 import './knowledge.css';
 import './plan.css';
@@ -19,14 +19,14 @@ function viewFromHash(hash) {
  const value=hash.replace(/^#/,'');
  if(value==='plan') return 'plan';
  if(value==='lab') return 'lab';
- if(value.startsWith('lab/')){let key='';try{key=decodeURIComponent(value.slice(4));}catch{return 'lab';}return topicForKey(key)?`lab:${key}`:'lab';}
+ if(value.startsWith('lab/')){let key='';try{key=decodeURIComponent(value.slice(4));}catch{return 'lab';}return topicForKey(key)||groupForKey(key)?`lab:${key}`:'lab';}
  return null;
 }
 
 function hashForView(view) {
  if(view==='plan') return '#plan';
  if(view==='lab') return '#lab';
- if(view.startsWith('lab:')&&topicForKey(view.slice(4))) return `#lab/${encodeURIComponent(view.slice(4))}`;
+ if(view.startsWith('lab:')&&(topicForKey(view.slice(4))||groupForKey(view.slice(4)))) return `#lab/${encodeURIComponent(view.slice(4))}`;
  return '';
 }
 
@@ -54,10 +54,11 @@ function App(){
  const note=knowledgeNotes.find(item=>item.key===view);
  const studioTitle=note?.title||studioModules.find(item=>item.key===view)?.title;
  const labTopic=view.startsWith('lab:')?topicForKey(view.slice(4)):null;
- const viewTitle=view==='detail'?record?.title:view==='editor'?'编辑分析':view==='plan'?'90天打卡':view==='lab'||labTopic?'热点实验室':studioTitle||(view==='template'?'分析模板':view==='favorites'?'我的收藏':view==='drafts'?'分析草稿':'全部分析');
+ const labGroup=groupForKey(labTopic?.group||(view.startsWith('lab:')?view.slice(4):null));
+ const viewTitle=view==='detail'?record?.title:view==='editor'?'编辑分析':view==='plan'?'90天打卡':labGroup?labGroup.title:view==='lab'?'游戏设计模块':studioTitle||(view==='template'?'分析模板':view==='favorites'?'我的收藏':view==='drafts'?'分析草稿':'全部分析');
  return <div className="app"><Sidebar records={records} view={view} activeId={activeId} onView={changeView} onSelect={select} onNew={create} onImport={()=>fileInput.current.click()} onExport={exportAll} mobile={mobile} onClose={()=>setMobile(false)}/><main className="main"><header className="topbar"><button className="icon-button menu-toggle" aria-label="打开导航" onClick={()=>setMobile(true)}><Menu size={21}/></button><div className="breadcrumbs"><button onClick={()=>changeView('library')}>我的工作台</button><ChevronRight size={14}/><span>{viewTitle}</span></div><div className="topbar-actions">{view==='detail'&&record?<><span className="saved-indicator"><Check size={13}/>已保存</span><button className="secondary export-top" onClick={()=>download(markdown(record),record.title.replace(/[\\/:*?"<>|]/g,'-')+'.md','text/markdown')}><Download size={15}/>导出</button><button className="primary" onClick={edit}><FilePenLine size={15}/>编辑分析</button></>:<span className="topbar-small">个人游戏设计资料库</span>}</div></header>
  {error&&<div role="alert" className="error-banner"><AlertCircle size={18}/><span>{error}</span><button onClick={exportAll}>导出当前资料</button></div>}
-  {view==='editor'&&editing?<Editor key={editing.record.id} {...editing} onSave={save} onCancel={()=>navigate(()=>{setEditing(null);setView(record?'detail':'library');})} onDirty={()=>setDirty(true)}/>:view==='plan'?<PlanView onDirtyChange={setDirty}/>:view==='lab'||labTopic?<HotspotLab topicKey={labTopic?.key} onView={changeView}/>:note?<KnowledgeView key={note.key} note={note} onView={changeView}/>:view==='template'?<TemplateView onNew={create}/>:studioModules.some(item=>item.key===view)?<StudioGuide mode={view} onToast={setToast} onView={changeView}/>:view==='detail'&&record?<GameDetail record={record} onEdit={edit} onFavorite={()=>{if(persist(records.map(r=>r.id===record.id?{...r,favorite:!r.favorite}:r)))setToast(record.favorite?'已取消收藏':'已加入收藏');}} onMarkdown={()=>download(markdown(record),record.title.replace(/[\\/:*?"<>|]/g,'-')+'.md','text/markdown')} onDelete={remove} onDuplicate={duplicate}/>:<LibraryView key={view} records={records} mode={view} onSelect={select} onNew={create}/>}
+  {view==='editor'&&editing?<Editor key={editing.record.id} {...editing} onSave={save} onCancel={()=>navigate(()=>{setEditing(null);setView(record?'detail':'library');})} onDirty={()=>setDirty(true)}/>:view==='plan'?<PlanView onDirtyChange={setDirty}/>:view==='lab'||labTopic||labGroup?<HotspotLab topicKey={labTopic?.key} groupKey={labGroup?.key} onView={changeView}/>:note?<KnowledgeView key={note.key} note={note} onView={changeView}/>:view==='template'?<TemplateView onNew={create}/>:studioModules.some(item=>item.key===view)?<StudioGuide mode={view} onToast={setToast} onView={changeView}/>:view==='detail'&&record?<GameDetail record={record} onEdit={edit} onFavorite={()=>{if(persist(records.map(r=>r.id===record.id?{...r,favorite:!r.favorite}:r)))setToast(record.favorite?'已取消收藏':'已加入收藏');}} onMarkdown={()=>download(markdown(record),record.title.replace(/[\\/:*?"<>|]/g,'-')+'.md','text/markdown')} onDelete={remove} onDuplicate={duplicate}/>:<LibraryView key={view} records={records} mode={view} onSelect={select} onNew={create}/>}
  <input ref={fileInput} type="file" accept=".json,application/json" hidden aria-label="导入备份文件" onChange={importFile}/></main>{toast&&<div className="toast" role="status"><Check size={17}/><span>{toast}</span>{undo&&toast==='分析已删除'&&<button onClick={()=>{if(persist([undo,...records])){setUndo(null);setToast('已恢复分析');}}}>撤销</button>}<button aria-label="关闭提示" onClick={()=>setToast('')}><X size={14}/></button></div>}{confirm&&<ConfirmDialog {...confirm} onCancel={()=>setConfirm(null)}/>}</div>;
 }
 createRoot(document.getElementById('root')).render(<App/>);

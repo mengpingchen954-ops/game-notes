@@ -423,6 +423,10 @@ export function topicForKey(key) {
   return hotspotTopics.find(topic => topic.key === key) || null;
 }
 
+export function groupForKey(key) {
+  return hotspotGroups.find(group => group.key === key) || null;
+}
+
 export function topicsForGroup(groupKey) {
   return hotspotTopics.filter(topic => topic.group === groupKey);
 }
