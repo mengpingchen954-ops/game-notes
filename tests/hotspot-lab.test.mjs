@@ -4,11 +4,11 @@ import {hotspotGroups, hotspotTopics, topicForKey, topicsForGroup} from '../src/
 
 test('hotspot lab includes philosophy and AI indie development as separate groups', () => {
   assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy', 'ai-indie']);
-  assert.equal(hotspotTopics.length, 17);
+  assert.equal(hotspotTopics.length, 18);
   assert.equal(new Set(hotspotTopics.map(topic => topic.key)).size, hotspotTopics.length);
   for (const group of hotspotGroups) {
     const topics = topicsForGroup(group.key);
-    assert.equal(topics.length, group.key === 'philosophy' ? 4 : group.key === 'ai-indie' ? 1 : 3);
+    assert.equal(topics.length, group.key === 'philosophy' ? 4 : group.key === 'ai-indie' ? 2 : 3);
     assert.ok(group.title && group.description);
     for (const topic of topics) {
       assert.equal(topicForKey(topic.key), topic);
@@ -20,6 +20,10 @@ test('hotspot lab includes philosophy and AI indie development as separate group
   assert.equal(plan.label, '天庭考核主策划');
   assert.match(JSON.stringify(plan), /封神榜缺页案/);
   assert.match(JSON.stringify(plan), /公开听证/);
+  const wulin = topicForKey('wulin-fun-games');
+  assert.equal(wulin.group, 'ai-indie');
+  assert.match(JSON.stringify(wulin), /华山三消论剑/);
+  assert.match(JSON.stringify(wulin), /物理反馈/);
 });
 
 test('tables are structurally complete and the lab covers the agreed evidence chain', () => {
