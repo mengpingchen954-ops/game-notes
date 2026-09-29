@@ -3,6 +3,28 @@ import {ArrowLeft, ArrowRight, CalendarClock, CheckCircle2, Layers3, ShieldCheck
 import {hotspotGroups, groupForKey, topicForKey, topicsForGroup} from './hotspotData';
 import {groupIcons} from './hotspotIcons';
 
+const platformUrls = {
+  Cursor: 'https://www.cursor.com/',
+  ChatGPT: 'https://chatgpt.com/',
+  'React Native': 'https://reactnative.dev/',
+  Firebase: 'https://firebase.google.com/',
+  Discord: 'https://discord.com/',
+  Nitro: 'https://discord.com/nitro',
+  Vercel: 'https://vercel.com/',
+  'Unity Asset Store': 'https://assetstore.unity.com/',
+  'GameDev Market': 'https://gamedevmarket.net/',
+  Fiverr: 'https://www.fiverr.com/',
+  Upwork: 'https://www.upwork.com/'
+};
+const platformPattern = new RegExp(`(${Object.keys(platformUrls).sort((a, b) => b.length - a.length).join('|')})`, 'g');
+
+function linkifyPlatformCell(cell) {
+  if (typeof cell !== 'string') return cell;
+  return cell.split(platformPattern).map((part, index) => platformUrls[part]
+    ? <a href={platformUrls[part]} target="_blank" rel="noreferrer" key={`${part}-${index}`}>{part}</a>
+    : part);
+}
+
 function TopicCard({topic, onOpen}) {
   return <button type="button" className="lab-topic-card" onClick={() => onOpen(topic.key)}>
     <span className="lab-topic-card-top"><span>{topic.label}</span><ArrowUpRightIcon/></span>
@@ -23,7 +45,7 @@ function SectionContent({section, id}) {
     {section.paragraphs?.map(paragraph => <p key={paragraph}>{paragraph}</p>)}
     {section.bullets && <ul>{section.bullets.map(item => <li key={item}>{item}</li>)}</ul>}
     {section.steps && <ol className="lab-steps">{section.steps.map((step, index) => <li key={step.label}><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{step.label}</strong><p>{step.body}</p></div></li>)}</ol>}
-    {section.table && <div className="lab-table-wrap" role="region" aria-label={`${section.title}表格`} tabIndex="0"><table><thead><tr>{section.table.columns.map(column => <th scope="col" key={column}>{column}</th>)}</tr></thead><tbody>{section.table.rows.map(row => <tr key={row[0]}>{row.map((cell, index) => index === 0 ? <th scope="row" key={index}>{cell}</th> : <td key={index}>{cell}</td>)}</tr>)}</tbody></table></div>}
+    {section.table && <div className="lab-table-wrap" role="region" aria-label={`${section.title}表格`} tabIndex="0"><table><thead><tr>{section.table.columns.map(column => <th scope="col" key={column}>{column}</th>)}</tr></thead><tbody>{section.table.rows.map(row => <tr key={row[0]}>{row.map((cell, index) => index === 0 ? <th scope="row" key={index}>{cell}</th> : <td key={index}>{linkifyPlatformCell(cell)}</td>)}</tr>)}</tbody></table></div>}
   </section>;
 }
 
