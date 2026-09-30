@@ -40,5 +40,6 @@ test('wild atlas notes expose the runnable package and README attachments',()=>{
 test('note attachments survive backup and reject oversized files',()=>{
   const note={...blankRecord('note'),title:'带附件的笔记',attachments:[{id:'file-1',name:'game.zip',type:'application/zip',size:3,data:'data:application/zip;base64,abc'}]};
   assert.deepEqual(parseBackup(backup([note]))[0].attachments,note.attachments);
-  assert.throws(()=>parseBackup(backup([{...note,attachments:[{...note.attachments[0],size:5*1024*1024}]}])),/附件/);
+  assert.equal(parseBackup(backup([{...note,attachments:[{...note.attachments[0],data:undefined}]}]))[0].attachments[0].data,undefined);
+  assert.throws(()=>parseBackup(backup([{...note,attachments:[{...note.attachments[0],size:51*1024*1024}]}])),/附件/);
 });

@@ -22,7 +22,7 @@ test('hotspot lab includes philosophy and AI indie development as separate group
   assert.match(JSON.stringify(plan), /公开听证/);
   const wulin = topicForKey('wulin-fun-games');
   assert.equal(wulin.group, 'ai-indie');
-  assert.match(JSON.stringify(wulin), /华山三消论剑/);
+  assert.match(JSON.stringify(wulin), /唐门·暴雨梨花弹珠台/);
   assert.match(JSON.stringify(wulin), /物理反馈/);
 });
 

@@ -1,0 +1,32 @@
+.wulin-game-shell{position:fixed;inset:0;overflow:hidden;background:#151127;color:#fff;font-family:"Microsoft YaHei UI","PingFang SC",system-ui,sans-serif;z-index:100}
+.wulin-game-canvas{position:absolute;inset:0;touch-action:none;cursor:crosshair}
+.wulin-game-canvas canvas{display:block;width:100%;height:100%}
+.wulin-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 54%,transparent 45%,rgba(10,7,23,.45) 100%),linear-gradient(180deg,rgba(16,10,39,.65),transparent 22%,transparent 76%,rgba(16,8,23,.58))}
+.wulin-hud{position:absolute;left:30px;right:30px;top:24px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
+.wulin-brand,.wulin-hud-actions,.wulin-status-strip,.wulin-message,.wulin-controls{pointer-events:auto}
+.wulin-brand{display:flex;gap:12px;align-items:center;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.wulin-brand strong{display:block;font-family:serif;font-size:24px;letter-spacing:.08em;color:#f7d58b}
+.wulin-brand small{display:block;margin-top:2px;color:#c2b6cb;font-size:10px;letter-spacing:.18em}
+.wulin-seal{display:grid;place-items:center;width:44px;height:44px;border:1px solid #e5b866;color:#f7d58b;background:rgba(87,27,49,.78);font-family:serif;font-size:16px;writing-mode:vertical-rl;letter-spacing:.12em;box-shadow:0 5px 16px rgba(0,0,0,.28)}
+.wulin-hud-actions{display:flex;gap:9px;align-items:center}
+.wulin-audience-toggle,.wulin-exit{border:1px solid rgba(248,219,154,.42);background:rgba(24,17,44,.68);color:#f7dca4;border-radius:999px;padding:9px 13px;font-size:11px;letter-spacing:.06em;backdrop-filter:blur(10px)}
+.wulin-audience-toggle.is-on{background:rgba(50,80,66,.72);border-color:rgba(161,222,180,.6);color:#d7f3d6}
+.wulin-exit{color:#cbc2d4;border-color:rgba(255,255,255,.16)}
+.wulin-live-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:6px;background:#958da2}.is-on .wulin-live-dot{background:#92df9a;box-shadow:0 0 0 4px rgba(146,223,154,.14)}
+.wulin-status-strip{position:absolute;top:92px;left:30px;display:flex;gap:9px;flex-wrap:wrap}
+.wulin-status-strip span{padding:8px 11px;border:1px solid rgba(246,213,139,.22);background:rgba(20,14,37,.58);color:#bdb1c8;border-radius:4px;font-size:11px;backdrop-filter:blur(9px)}
+.wulin-status-strip b{color:#f8d88f;margin-left:4px;font-weight:750}
+.wulin-message{position:absolute;left:50%;top:92px;transform:translateX(-50%);min-width:280px;text-align:center;padding:10px 18px;color:#f9e8be;font-size:12px;background:rgba(21,14,40,.55);border-bottom:1px solid rgba(242,203,122,.38);backdrop-filter:blur(10px)}
+.wulin-message-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:#e9b86a;vertical-align:middle;margin:0 8px 2px 0}
+.wulin-controls{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);padding:8px 13px;border:1px solid rgba(255,255,255,.13);border-radius:999px;color:#b5aabd;font-size:10px;background:rgba(15,10,30,.46);backdrop-filter:blur(8px)}
+.wulin-controls i{font-style:normal;color:#e5b866;margin:0 9px}
+.wulin-modal{position:absolute;inset:0;display:grid;place-items:center;background:rgba(11,7,24,.35);backdrop-filter:blur(3px)}
+.wulin-modal-card{width:min(510px,calc(100vw - 34px));padding:38px 42px 34px;border:1px solid rgba(245,204,122,.34);background:linear-gradient(145deg,rgba(38,24,59,.94),rgba(22,16,40,.95));box-shadow:0 28px 70px rgba(0,0,0,.42);text-align:center;position:relative}
+.wulin-modal-card:before,.wulin-result-card:before{content:"";position:absolute;inset:9px;border:1px solid rgba(245,204,122,.14);pointer-events:none}
+.wulin-kicker{color:#d7a75c;font-size:10px;letter-spacing:.24em;text-transform:uppercase}
+.wulin-modal-card h1{margin:12px 0 11px;font-family:serif;font-size:54px;font-weight:700;letter-spacing:.08em;color:#f8d78d;text-shadow:0 4px 14px rgba(0,0,0,.38)}
+.wulin-modal-card p{margin:0 auto 25px;max-width:390px;line-height:1.9;color:#d0c6d7;font-size:13px}
+.wulin-how{display:flex;justify-content:center;gap:13px;margin:0 auto 28px;color:#c4b7c9;font-size:11px}.wulin-how span{display:flex;align-items:center;gap:6px}.wulin-how b{display:grid;place-items:center;width:21px;height:21px;border:1px solid rgba(245,204,122,.52);border-radius:50%;color:#f7d58b;font-size:9px}
+.wulin-primary-button{position:relative;z-index:1;border:1px solid #f3c86e;background:linear-gradient(130deg,#c75a39,#a9314a);color:#fff4cc;border-radius:3px;padding:12px 24px;font-weight:750;letter-spacing:.1em;box-shadow:0 10px 25px rgba(117,34,47,.32);transition:transform .16s,filter .16s}.wulin-primary-button:hover{transform:translateY(-2px);filter:brightness(1.08)}.wulin-primary-button span{margin-left:13px;color:#ffe6a3}.wulin-modal-card small{display:block;margin-top:15px;color:#92859f;font-size:10px}
+.wulin-result-card{position:absolute;right:34px;bottom:72px;width:min(310px,calc(100vw - 34px));padding:28px 27px 25px;border:1px solid rgba(245,204,122,.4);background:rgba(29,17,46,.92);box-shadow:0 20px 50px rgba(0,0,0,.42);text-align:left}.wulin-result-card h2{position:relative;margin:10px 0 8px;color:#f9d98e;font-family:serif;font-size:27px}.wulin-result-card p{position:relative;margin:0 0 18px;color:#c8bbcf;font-size:12px;line-height:1.65}.wulin-result-stats{position:relative;display:flex;gap:22px;margin-bottom:19px;color:#a999b1;font-size:11px}.wulin-result-stats b{color:#f4d08d;margin-left:5px}.wulin-result-card .wulin-primary-button{font-size:11px}
+@media (max-width:720px){.wulin-hud{left:15px;right:15px;top:14px}.wulin-brand strong{font-size:19px}.wulin-brand small{font-size:8px}.wulin-seal{width:38px;height:38px;font-size:13px}.wulin-exit{display:none}.wulin-status-strip{top:73px;left:15px;right:15px;gap:5px}.wulin-status-strip span{font-size:9px;padding:6px 8px}.wulin-message{top:122px;min-width:0;width:calc(100vw - 30px);font-size:10px}.wulin-controls{bottom:12px;font-size:9px;white-space:nowrap}.wulin-controls i{margin:0 5px}.wulin-modal-card{padding:30px 22px 27px}.wulin-modal-card h1{font-size:43px}.wulin-modal-card p{font-size:12px}.wulin-how{gap:8px;font-size:9px}.wulin-how b{width:18px;height:18px}.wulin-result-card{left:15px;right:15px;bottom:48px;width:auto}}

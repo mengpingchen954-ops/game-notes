@@ -1,5 +1,5 @@
 export const STORAGE_KEY = 'game-notes.library.v1';
-export const MAX_NOTE_ATTACHMENT_BYTES = 4 * 1024 * 1024;
+export const MAX_NOTE_ATTACHMENT_BYTES = 50 * 1024 * 1024;
 export const MAX_NOTE_ATTACHMENTS = 10;
 export const sections = [
   {id:'core', number:'01', title:'核心赌局', general:'核心玩法', color:'purple', caption:'玩家为什么要做这个决定？', fields:[
@@ -45,7 +45,7 @@ export function normalizeRecord(r){
   if(!['草稿','已整理'].includes(r.status)||!['general','gamble'].includes(r.framework)||typeof r.favorite!=='boolean') throw new Error('条目状态无效');
   for(const k of ['tags','loop']) if(!Array.isArray(r[k])||r[k].length>50||r[k].some(x=>typeof x!=='string'||x.length>1000)) throw new Error('标签或循环步骤格式不正确');
   const attachments=r.attachments===undefined?[]:r.attachments;
-  if(!Array.isArray(attachments)||attachments.length>MAX_NOTE_ATTACHMENTS||attachments.some(file=>!file||typeof file!=='object'||typeof file.id!=='string'||typeof file.name!=='string'||typeof file.type!=='string'||typeof file.data!=='string'||!Number.isInteger(file.size)||file.size<0||file.size>MAX_NOTE_ATTACHMENT_BYTES||file.name.length>240||file.type.length>160||file.data.length>Math.ceil(MAX_NOTE_ATTACHMENT_BYTES*1.4)+100)) throw new Error('附件格式或大小无效');
+  if(!Array.isArray(attachments)||attachments.length>MAX_NOTE_ATTACHMENTS||attachments.some(file=>!file||typeof file!=='object'||typeof file.id!=='string'||typeof file.name!=='string'||typeof file.type!=='string'||(file.data!==undefined&&typeof file.data!=='string')||!Number.isInteger(file.size)||file.size<0||file.size>MAX_NOTE_ATTACHMENT_BYTES||file.name.length>240||file.type.length>160||(file.data!==undefined&&file.data.length>Math.ceil(MAX_NOTE_ATTACHMENT_BYTES*1.4)+100))) throw new Error('附件格式或大小无效');
   if(!r.fields||fieldKeys.some(k=>typeof r.fields[k]!=='string'||r.fields[k].length>100000)) throw new Error('分析框架缺少字段');
   if(!Number.isFinite(Date.parse(r.updatedAt))) throw new Error('更新时间无效');
   if(!['analysis','note'].includes(kind)) throw new Error('条目类型无效');
@@ -68,7 +68,7 @@ export function loadLibrary(){
 }
 export function noteContent(r){return [r.subtitle&&`来源：${r.subtitle}`,r.genre&&`分类：${r.genre}`,r.tags.length&&`标签：${r.tags.join('、')}`,r.summary,r.notes,r.takeaways,r.sources].filter(Boolean).join('\n\n');}
 export function noteAttachments(r){
-  const uploaded=(r.attachments||[]).map(file=>({name:file.name,href:file.data,type:'已上传',download:file.name}));
+  const uploaded=(r.attachments||[]).filter(file=>file.data).map(file=>({name:file.name,href:file.data,type:'已上传',download:file.name}));
   const text=`${r.title}\n${r.notes}\n${r.summary}`.toLowerCase();
   const bundled=/万灵秘图|寻宝游戏|wild atlas/.test(text) ? [
     {name:'万灵秘图 · 可运行包',href:'/game-notes/wild-atlas-playable.zip',type:'下载 ZIP'},
