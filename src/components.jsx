@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {Layers3,Library,Star,FilePenLine,Plus,ArrowUpRight,ArrowRight,Search,Download,Upload,BookOpen,CalendarDays,Target,SlidersHorizontal,RotateCw,AudioLines,X,Check,Trash2,Copy,NotebookPen,Users,Workflow,Terminal,ExternalLink,Gamepad2,Flame} from 'lucide-react';
-import {sections,completion,noteContent} from './model';
+import {sections,completion,noteContent,noteAttachments} from './model';
 import {knowledgeNotes} from './knowledge';
 import {KnowledgeIndex} from './KnowledgeView';
 import {hotspotGroups, topicForKey} from './hotspotData';
@@ -54,9 +54,11 @@ function AnalysisDetail({record,onEdit,onFavorite,onMarkdown,onDelete,onDuplicat
 }
 
 function NoteDetail({record,onFavorite,onDelete,onDuplicate}){
+ const attachments=noteAttachments(record);
  return <div className="editor-page note-reader"><article className="document">
   <header className="title-line"><h1>{record.title}</h1><button className={'icon-button favorite '+(record.favorite?'is-favorite':'')} aria-label={record.favorite?'取消收藏':'收藏笔记'} onClick={onFavorite}><Star size={21} fill={record.favorite?'currentColor':'none'}/></button></header>
   <div className="long-text">{noteContent(record)||'这里还是空白。点击“编辑笔记”开始记录。'}</div>
+  {attachments.length>0&&<section className="note-attachments" aria-label="笔记附件"><div><strong>游戏附件</strong><span>运行包与说明</span></div><div className="attachment-list">{attachments.map(file=><a className="attachment-card" href={file.href} target="_blank" rel="noreferrer" download={file.href.endsWith('.zip')?true:undefined} key={file.href}><span>{file.name}</span><small>{file.type}</small><ArrowUpRight size={15}/></a>)}</div></section>}
   <footer className="document-footer"><span>更新于 {new Intl.DateTimeFormat('zh-CN',{dateStyle:'medium'}).format(new Date(record.updatedAt))}</span><div><button onClick={onDuplicate}><Copy size={14}/>复制</button><button onClick={onDelete} className="danger-link"><Trash2 size={14}/>删除</button></div></footer>
  </article></div>;
 }

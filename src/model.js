@@ -62,5 +62,12 @@ export function loadLibrary(){
   catch(error){return {records:[],error:'本地资料暂时无法读取。原数据未被覆盖，请先导出原始数据，或导入有效备份。'};}
 }
 export function noteContent(r){return [r.subtitle&&`来源：${r.subtitle}`,r.genre&&`分类：${r.genre}`,r.tags.length&&`标签：${r.tags.join('、')}`,r.summary,r.notes,r.takeaways,r.sources].filter(Boolean).join('\n\n');}
+export function noteAttachments(r){
+  const text=`${r.title}\n${r.notes}\n${r.summary}`.toLowerCase();
+  return /万灵秘图|寻宝游戏|wild atlas/.test(text) ? [
+    {name:'万灵秘图 · 可运行包',href:'/game-notes/wild-atlas-playable.zip',type:'下载 ZIP'},
+    {name:'万灵秘图 · 运行说明',href:'/game-notes/wild-atlas-README.md',type:'查看 README'}
+  ] : [];
+}
 export function markdown(r){if(r.kind==='note') return `# ${r.title}\n\n${noteContent(r)}\n`;return `# ${r.title}${r.subtitle?' · '+r.subtitle:''}\n\n${r.summary}\n\n`+sections.map(s=>`## ${s.number} ${r.framework==='gamble'?s.title:s.general}\n\n`+s.fields.map(f=>`### ${f.label}\n\n${r.fields[f.key]||'待填写'}\n`).join('\n')).join('\n')+`\n## 核心循环\n\n${r.loop.join(' → ')||'待填写'}\n\n## 借鉴清单\n\n${r.takeaways}\n\n## 游玩笔记\n\n${r.notes}\n\n## 资料来源\n\n${r.sources}\n`;}
 export function download(text,name,type='application/json'){const url=URL.createObjectURL(new Blob([text],{type:type+';charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}

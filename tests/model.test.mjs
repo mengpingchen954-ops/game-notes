@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {backup,blankRecord,completion,mergeRecords,normalizeRecord,parseBackup,seed,markdown,noteContent} from '../src/model.js';
+import {backup,blankRecord,completion,mergeRecords,normalizeRecord,parseBackup,seed,markdown,noteContent,noteAttachments} from '../src/model.js';
 
 test('seed completes all eight framework questions',()=>{assert.equal(completion(seed),8);});
 test('backup round trips normalized records',()=>{const parsed=parseBackup(backup([seed]));assert.equal(parsed.length,1);assert.deepEqual(parsed[0],normalizeRecord(seed));});
@@ -31,4 +31,9 @@ test('note records round trip with note markdown and legacy compatibility',()=>{
   const simplified={...oldNote,notes:content,subtitle:'',summary:'',takeaways:'',sources:'',genre:'',tags:[]};
   assert.equal(noteContent(simplified),content);
   assert.equal(markdown(simplified),`# ${note.title}\n\n${content}\n`);
+});
+test('wild atlas notes expose the runnable package and README attachments',()=>{
+  const note={...blankRecord('note'),title:'Demo思路-寻宝游戏',notes:'万灵秘图的寻宝流程'};
+  assert.deepEqual(noteAttachments(note).map(file=>file.href),['/game-notes/wild-atlas-playable.zip','/game-notes/wild-atlas-README.md']);
+  assert.deepEqual(noteAttachments({...note,title:'普通灵感',notes:'随手记录'}),[]);
 });
