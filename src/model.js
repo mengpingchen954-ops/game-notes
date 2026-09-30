@@ -1,4 +1,6 @@
 export const STORAGE_KEY = 'game-notes.library.v1';
+export const MAX_NOTE_ATTACHMENT_BYTES = 4 * 1024 * 1024;
+export const MAX_NOTE_ATTACHMENTS = 10;
 export const sections = [
   {id:'core', number:'01', title:'核心赌局', general:'核心玩法', color:'purple', caption:'玩家为什么要做这个决定？', fields:[
     {key:'choice', label:'玩家反复做什么选择？', hint:'写出两个或几个具体动作，避免只写“策略”“探索”等类型词。'},
@@ -33,18 +35,21 @@ export const seed = {
   sources:'基于本次对话的设计分析；范围为单人基础玩法，不涵盖全部扩展道具和多人模式。\nSteam：https://store.steampowered.com/app/2835570/',
   updatedAt:'2026-09-10T08:00:00.000Z'
 };
-export function blankRecord(kind='analysis'){return {id:crypto.randomUUID(),kind,title:'',subtitle:'',genre:'',tags:[],status:'草稿',favorite:false,framework:'general',summary:'',fields:Object.fromEntries(fieldKeys.map(k=>[k,''])),loop:[],takeaways:'',notes:'',sources:'',updatedAt:new Date().toISOString()};}
+export function blankRecord(kind='analysis'){return {id:crypto.randomUUID(),kind,title:'',subtitle:'',genre:'',tags:[],attachments:[],status:'草稿',favorite:false,framework:'general',summary:'',fields:Object.fromEntries(fieldKeys.map(k=>[k,''])),loop:[],takeaways:'',notes:'',sources:'',updatedAt:new Date().toISOString()};}
 export function completion(record){return fieldKeys.filter(k=>record.fields[k]?.trim()).length;}
 export function normalizeRecord(r){
   if (!r || typeof r !== 'object' || Array.isArray(r)) throw new Error('分析条目格式不正确');
+  const kind=r.kind===undefined?'analysis':r.kind;
   for (const k of ['id','title','subtitle','genre','summary','takeaways','notes','sources','updatedAt']) if(typeof r[k]!=='string'||r[k].length>(k==='notes'&&r.kind==='note'?1000000:100000)) throw new Error(`条目字段 ${k} 无效`);
   if(!r.id.trim()||!r.title.trim()) throw new Error('标题和编号不能为空');
   if(!['草稿','已整理'].includes(r.status)||!['general','gamble'].includes(r.framework)||typeof r.favorite!=='boolean') throw new Error('条目状态无效');
   for(const k of ['tags','loop']) if(!Array.isArray(r[k])||r[k].length>50||r[k].some(x=>typeof x!=='string'||x.length>1000)) throw new Error('标签或循环步骤格式不正确');
+  const attachments=r.attachments===undefined?[]:r.attachments;
+  if(!Array.isArray(attachments)||attachments.length>MAX_NOTE_ATTACHMENTS||attachments.some(file=>!file||typeof file!=='object'||typeof file.id!=='string'||typeof file.name!=='string'||typeof file.type!=='string'||typeof file.data!=='string'||!Number.isInteger(file.size)||file.size<0||file.size>MAX_NOTE_ATTACHMENT_BYTES||file.name.length>240||file.type.length>160||file.data.length>Math.ceil(MAX_NOTE_ATTACHMENT_BYTES*1.4)+100)) throw new Error('附件格式或大小无效');
   if(!r.fields||fieldKeys.some(k=>typeof r.fields[k]!=='string'||r.fields[k].length>100000)) throw new Error('分析框架缺少字段');
   if(!Number.isFinite(Date.parse(r.updatedAt))) throw new Error('更新时间无效');
-  const kind=r.kind===undefined?'analysis':r.kind;if(!['analysis','note'].includes(kind)) throw new Error('条目类型无效');
-  return Object.fromEntries(['id','kind','title','subtitle','genre','summary','takeaways','notes','sources','updatedAt','status','framework','favorite','tags','loop','fields'].map(k=>[k,k==='fields'?Object.fromEntries(fieldKeys.map(f=>[f,r.fields[f]])):k==='kind'?kind:r[k]]));
+  if(!['analysis','note'].includes(kind)) throw new Error('条目类型无效');
+  return Object.fromEntries(['id','kind','title','subtitle','genre','summary','takeaways','notes','sources','updatedAt','status','framework','favorite','tags','loop','attachments','fields'].map(k=>[k,k==='fields'?Object.fromEntries(fieldKeys.map(f=>[f,r.fields[f]])):k==='kind'?kind:k==='attachments'?attachments:r[k]]));
 }
 export function parseBackup(text){
   let value;try{value=JSON.parse(text);}catch{throw new Error('文件不是有效的 JSON 备份');}
@@ -63,11 +68,13 @@ export function loadLibrary(){
 }
 export function noteContent(r){return [r.subtitle&&`来源：${r.subtitle}`,r.genre&&`分类：${r.genre}`,r.tags.length&&`标签：${r.tags.join('、')}`,r.summary,r.notes,r.takeaways,r.sources].filter(Boolean).join('\n\n');}
 export function noteAttachments(r){
+  const uploaded=(r.attachments||[]).map(file=>({name:file.name,href:file.data,type:'已上传',download:file.name}));
   const text=`${r.title}\n${r.notes}\n${r.summary}`.toLowerCase();
-  return /万灵秘图|寻宝游戏|wild atlas/.test(text) ? [
+  const bundled=/万灵秘图|寻宝游戏|wild atlas/.test(text) ? [
     {name:'万灵秘图 · 可运行包',href:'/game-notes/wild-atlas-playable.zip',type:'下载 ZIP'},
     {name:'万灵秘图 · 运行说明',href:'/game-notes/wild-atlas-README.md',type:'查看 README'}
   ] : [];
+  return [...uploaded,...bundled];
 }
 export function markdown(r){if(r.kind==='note') return `# ${r.title}\n\n${noteContent(r)}\n`;return `# ${r.title}${r.subtitle?' · '+r.subtitle:''}\n\n${r.summary}\n\n`+sections.map(s=>`## ${s.number} ${r.framework==='gamble'?s.title:s.general}\n\n`+s.fields.map(f=>`### ${f.label}\n\n${r.fields[f.key]||'待填写'}\n`).join('\n')).join('\n')+`\n## 核心循环\n\n${r.loop.join(' → ')||'待填写'}\n\n## 借鉴清单\n\n${r.takeaways}\n\n## 游玩笔记\n\n${r.notes}\n\n## 资料来源\n\n${r.sources}\n`;}
 export function download(text,name,type='application/json'){const url=URL.createObjectURL(new Blob([text],{type:type+';charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}

@@ -37,3 +37,8 @@ test('wild atlas notes expose the runnable package and README attachments',()=>{
   assert.deepEqual(noteAttachments(note).map(file=>file.href),['/game-notes/wild-atlas-playable.zip','/game-notes/wild-atlas-README.md']);
   assert.deepEqual(noteAttachments({...note,title:'普通灵感',notes:'随手记录'}),[]);
 });
+test('note attachments survive backup and reject oversized files',()=>{
+  const note={...blankRecord('note'),title:'带附件的笔记',attachments:[{id:'file-1',name:'game.zip',type:'application/zip',size:3,data:'data:application/zip;base64,abc'}]};
+  assert.deepEqual(parseBackup(backup([note]))[0].attachments,note.attachments);
+  assert.throws(()=>parseBackup(backup([{...note,attachments:[{...note.attachments[0],size:5*1024*1024}]}])),/附件/);
+});
