@@ -15,7 +15,7 @@ export const sections = [
 ];
 export const fieldKeys = sections.flatMap(s=>s.fields.map(f=>f.key));
 export const seed = {
-  id:'buckshot-roulette', title:'恶魔轮盘', subtitle:'Buckshot Roulette', genre:'概率博弈', tags:['风险决策','资源管理','心理惊悚'], status:'已整理', favorite:true, framework:'gamble',
+  id:'buckshot-roulette', kind:'analysis', title:'恶魔轮盘', subtitle:'Buckshot Roulette', genre:'概率博弈', tags:['风险决策','资源管理','心理惊悚'], status:'已整理', favorite:true, framework:'gamble',
   summary:'用一个“下一枪打谁”的选择，把信息、生命和行动权变成一场可计算、却无法完全确定的赌局。',
   fields:{
     choice:'下一枪打自己，还是打对手？操作只有一个核心分岔，但每次都要重新判断。',
@@ -33,17 +33,18 @@ export const seed = {
   sources:'基于本次对话的设计分析；范围为单人基础玩法，不涵盖全部扩展道具和多人模式。\nSteam：https://store.steampowered.com/app/2835570/',
   updatedAt:'2026-09-10T08:00:00.000Z'
 };
-export function blankRecord(){return {id:crypto.randomUUID(),title:'',subtitle:'',genre:'',tags:[],status:'草稿',favorite:false,framework:'general',summary:'',fields:Object.fromEntries(fieldKeys.map(k=>[k,''])),loop:[],takeaways:'',notes:'',sources:'',updatedAt:new Date().toISOString()};}
+export function blankRecord(kind='analysis'){return {id:crypto.randomUUID(),kind,title:'',subtitle:'',genre:'',tags:[],status:'草稿',favorite:false,framework:'general',summary:'',fields:Object.fromEntries(fieldKeys.map(k=>[k,''])),loop:[],takeaways:'',notes:'',sources:'',updatedAt:new Date().toISOString()};}
 export function completion(record){return fieldKeys.filter(k=>record.fields[k]?.trim()).length;}
 export function normalizeRecord(r){
   if (!r || typeof r !== 'object' || Array.isArray(r)) throw new Error('分析条目格式不正确');
   for (const k of ['id','title','subtitle','genre','summary','takeaways','notes','sources','updatedAt']) if(typeof r[k]!=='string'||r[k].length>100000) throw new Error(`条目字段 ${k} 无效`);
-  if(!r.id.trim()||!r.title.trim()) throw new Error('游戏名称和编号不能为空');
+  if(!r.id.trim()||!r.title.trim()) throw new Error('标题和编号不能为空');
   if(!['草稿','已整理'].includes(r.status)||!['general','gamble'].includes(r.framework)||typeof r.favorite!=='boolean') throw new Error('条目状态无效');
   for(const k of ['tags','loop']) if(!Array.isArray(r[k])||r[k].length>50||r[k].some(x=>typeof x!=='string'||x.length>1000)) throw new Error('标签或循环步骤格式不正确');
   if(!r.fields||fieldKeys.some(k=>typeof r.fields[k]!=='string'||r.fields[k].length>100000)) throw new Error('分析框架缺少字段');
   if(!Number.isFinite(Date.parse(r.updatedAt))) throw new Error('更新时间无效');
-  return Object.fromEntries(['id','title','subtitle','genre','summary','takeaways','notes','sources','updatedAt','status','framework','favorite','tags','loop','fields'].map(k=>[k,k==='fields'?Object.fromEntries(fieldKeys.map(f=>[f,r.fields[f]])):r[k]]));
+  const kind=r.kind===undefined?'analysis':r.kind;if(!['analysis','note'].includes(kind)) throw new Error('条目类型无效');
+  return Object.fromEntries(['id','kind','title','subtitle','genre','summary','takeaways','notes','sources','updatedAt','status','framework','favorite','tags','loop','fields'].map(k=>[k,k==='fields'?Object.fromEntries(fieldKeys.map(f=>[f,r.fields[f]])):k==='kind'?kind:r[k]]));
 }
 export function parseBackup(text){
   let value;try{value=JSON.parse(text);}catch{throw new Error('文件不是有效的 JSON 备份');}
@@ -60,5 +61,5 @@ export function loadLibrary(){
   try{const text=localStorage.getItem(STORAGE_KEY);return {records:text?parseBackup(text):[structuredClone(seed)],error:''};}
   catch(error){return {records:[],error:'本地资料暂时无法读取。原数据未被覆盖，请先导出原始数据，或导入有效备份。'};}
 }
-export function markdown(r){return `# ${r.title}${r.subtitle?' · '+r.subtitle:''}\n\n${r.summary}\n\n`+sections.map(s=>`## ${s.number} ${r.framework==='gamble'?s.title:s.general}\n\n`+s.fields.map(f=>`### ${f.label}\n\n${r.fields[f.key]||'待填写'}\n`).join('\n')).join('\n')+`\n## 核心循环\n\n${r.loop.join(' → ')||'待填写'}\n\n## 借鉴清单\n\n${r.takeaways}\n\n## 游玩笔记\n\n${r.notes}\n\n## 资料来源\n\n${r.sources}\n`;}
+export function markdown(r){if(r.kind==='note') return `# ${r.title}${r.subtitle?' · '+r.subtitle:''}\n\n${r.summary}\n\n## 灵感内容\n\n${r.notes}\n\n## 下一步想法\n\n${r.takeaways}\n\n## 标签与来源\n\n${r.tags.join('、')}${r.genre?'\n\n分类：'+r.genre:''}\n`;return `# ${r.title}${r.subtitle?' · '+r.subtitle:''}\n\n${r.summary}\n\n`+sections.map(s=>`## ${s.number} ${r.framework==='gamble'?s.title:s.general}\n\n`+s.fields.map(f=>`### ${f.label}\n\n${r.fields[f.key]||'待填写'}\n`).join('\n')).join('\n')+`\n## 核心循环\n\n${r.loop.join(' → ')||'待填写'}\n\n## 借鉴清单\n\n${r.takeaways}\n\n## 游玩笔记\n\n${r.notes}\n\n## 资料来源\n\n${r.sources}\n`;}
 export function download(text,name,type='application/json'){const url=URL.createObjectURL(new Blob([text],{type:type+';charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
