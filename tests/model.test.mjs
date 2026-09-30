@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {backup,blankRecord,completion,mergeRecords,normalizeRecord,parseBackup,seed,markdown} from '../src/model.js';
+import {backup,blankRecord,completion,mergeRecords,normalizeRecord,parseBackup,seed,markdown,noteContent} from '../src/model.js';
 
 test('seed completes all eight framework questions',()=>{assert.equal(completion(seed),8);});
 test('backup round trips normalized records',()=>{const parsed=parseBackup(backup([seed]));assert.equal(parsed.length,1);assert.deepEqual(parsed[0],normalizeRecord(seed));});
@@ -24,5 +24,11 @@ test('note records round trip with note markdown and legacy compatibility',()=>{
   assert.equal(mergeRecords([seed],[legacy]).skipped,1);
   assert.throws(()=>normalizeRecord({...note,kind:'unknown'}));
   assert.doesNotMatch(markdown(parsed),/核心玩法|待填写/);
-  assert.match(markdown(parsed),/## 灵感内容/);
+  assert.match(markdown(parsed),/记录一次机制观察/);
+  const oldNote={...note,subtitle:'旧来源',summary:'旧摘要',takeaways:'旧想法',sources:'旧链接'};
+  const content=noteContent(oldNote);
+  for(const text of ['旧来源','旧摘要','旧想法','旧链接','记录一次机制观察']) assert.ok(content.includes(text));
+  const simplified={...oldNote,notes:content,subtitle:'',summary:'',takeaways:'',sources:'',genre:'',tags:[]};
+  assert.equal(noteContent(simplified),content);
+  assert.equal(markdown(simplified),`# ${note.title}\n\n${content}\n`);
 });
