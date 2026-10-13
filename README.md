@@ -33,6 +33,17 @@ npm run build
 
 `main` 分支更新后，GitHub Actions 会运行测试和构建，并自动部署到 GitHub Pages。
 
+## 音乐游戏玩法
+
+左侧“游戏设计模块”新增“音乐游戏玩法”，沿用现有模块导航和表格布局：
+
+- [模块入口](https://mengpingchen954-ops.github.io/game-notes/#lab/music-gameplay)
+- [玩法分类总览](https://mengpingchen954-ops.github.io/game-notes/#lab/music-classification)：六大玩法家族、细分操作、代表作品和分类边界。
+- [操作与谱面维度](https://mengpingchen954-ops.github.io/game-notes/#lab/music-dimensions)：输入方式、谱面表现、音符动作、判定目标和游戏模式。
+- [代表作品对照](https://mengpingchen954-ops.github.io/game-notes/#lab/music-examples)：常见作品的机制组合与同系列多模式。
+
+内容为2026年10月13日的对话整理，涵盖经典与受欢迎作品，不是实时市场排名。内容数据位于 `src/musicGameLab.js`。
+
 ## 神仙考核策划
 
 - [《天庭考核：今日宜飞升》详细 GDD](docs/heavenly-exam-gdd.md)

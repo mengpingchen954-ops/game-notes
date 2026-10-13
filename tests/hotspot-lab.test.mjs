@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {hotspotGroups, hotspotTopics, topicForKey, topicsForGroup} from '../src/hotspotData.js';
 
-test('hotspot lab includes philosophy and AI indie development as separate groups', () => {
-  assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy', 'ai-indie']);
-  assert.equal(hotspotTopics.length, 18);
+test('hotspot lab includes philosophy, AI indie development and music gameplay as separate groups', () => {
+  assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy', 'ai-indie', 'music-gameplay']);
+  assert.equal(hotspotTopics.length, 21);
   assert.equal(new Set(hotspotTopics.map(topic => topic.key)).size, hotspotTopics.length);
   for (const group of hotspotGroups) {
     const topics = topicsForGroup(group.key);
@@ -14,6 +14,9 @@ test('hotspot lab includes philosophy and AI indie development as separate group
       assert.equal(topicForKey(topic.key), topic);
       assert.ok(topic.title && topic.summary && topic.tags.length > 0);
       assert.ok(topic.sections.length > 0 && topic.checklist.length > 0);
+      for (const entry of topic.contents ?? []) {
+        assert.ok(topic.sections.some(section => section.title === entry.sectionTitle), `${topic.key}/${entry.label} must link to a section`);
+      }
     }
   }
   const plan = topicForKey('heavenly-exam-plan');
