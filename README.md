@@ -41,6 +41,7 @@ npm run build
 - [玩法分类总览](https://mengpingchen954-ops.github.io/game-notes/#lab/music-classification)：六大玩法家族、细分操作、代表作品和分类边界。
 - [操作与谱面维度](https://mengpingchen954-ops.github.io/game-notes/#lab/music-dimensions)：输入方式、谱面表现、音符动作、判定目标和游戏模式。
 - [代表作品对照](https://mengpingchen954-ops.github.io/game-notes/#lab/music-examples)：常见作品的机制组合与同系列多模式。
+- [玩法复刻安排](https://mengpingchen954-ops.github.io/game-notes/#lab/music-replication)：独立卡片与页面，整理六步复刻顺序、一比一验收标准和首个太鼓项目范围。
 
 内容为2026年10月13日的对话整理，涵盖经典与受欢迎作品，不是实时市场排名。内容数据位于 `src/musicGameLab.js`。
 

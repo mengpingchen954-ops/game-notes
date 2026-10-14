@@ -4,11 +4,11 @@ import {hotspotGroups, hotspotTopics, topicForKey, topicsForGroup} from '../src/
 
 test('hotspot lab includes philosophy, AI indie development and music gameplay as separate groups', () => {
   assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy', 'ai-indie', 'music-gameplay']);
-  assert.equal(hotspotTopics.length, 21);
+  assert.equal(hotspotTopics.length, 22);
   assert.equal(new Set(hotspotTopics.map(topic => topic.key)).size, hotspotTopics.length);
   for (const group of hotspotGroups) {
     const topics = topicsForGroup(group.key);
-    assert.equal(topics.length, group.key === 'philosophy' ? 4 : group.key === 'ai-indie' ? 2 : 3);
+    assert.equal(topics.length, group.key === 'philosophy' || group.key === 'music-gameplay' ? 4 : group.key === 'ai-indie' ? 2 : 3);
     assert.ok(group.title && group.description);
     for (const topic of topics) {
       assert.equal(topicForKey(topic.key), topic);
