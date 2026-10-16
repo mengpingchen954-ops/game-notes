@@ -47,18 +47,18 @@ npm run build
 
 ## 手作饰品游戏
 
-左侧“游戏设计模块”新增独立的“手作饰品游戏”，收录2026年10月16日的完整创意讨论：
+左侧“游戏设计模块”的“手作饰品游戏”，已按游戏导演、设计师、创意导演、视觉艺术家、技术总监和制作人六类技能重整2026年10月16日的创意讨论：
 
 - [模块入口](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-studio)
-- [创意与方向总览](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-direction)
-- [Luashaa 品牌灵感](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-luashaa)
-- [全部候选题材](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-ideas)
-- [手作与经营玩法](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-gameplay)
-- [Steam 参考游戏](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-steam)
-- [3D 视觉与材质](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-visual)
-- [首版范围与验证](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-prototype)
+- [游戏导演 · 定位与取舍](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-direction)
+- [创意导演 · 品牌与主题](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-luashaa)
+- [游戏导演 · 选题与空位](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-ideas)
+- [游戏设计师 · 核心循环](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-gameplay)
+- [游戏导演 · 竞品与机会](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-steam)
+- [美术与技术 · 3D 目标](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-visual)
+- [制作人 · 原型与验收](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-prototype)
 
-内容数据位于 `src/handmadeStudioLab.js`。已明确的用户偏好、讨论建议与待定事项分别标注；品牌经营数据保留来源边界，Steam 发售状态带查询日期。外部参考通过原站链接访问。
+内容数据位于 `src/handmadeStudioLab.js`。保留十二类原始题材及19款 Steam 参考，增加低直接竞争机会、可解释委托与重试规则、3D 资产 brief、G0—G4 阶段验收和风险裁剪。已明确的用户偏好、策划建议与待定事项分别标注；品牌资料和 Steam 状态保留来源及日期边界。
 
 ## 神仙考核策划
 

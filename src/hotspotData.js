@@ -23,7 +23,7 @@ export const hotspotGroups = [
   {key: 'philosophy', number: '05', title: '思想小游戏', description: '用简单操作承载思想：最终主策划、七款玩法原型、20个世界观对比与首作验证。'},
   {key: 'ai-indie', number: '06', title: 'AI 独立游戏开发', description: '从 Harpagia 案例整理个人开发的工具、成本、上线节奏、玩家反馈与社区推广。'},
   {key: 'music-gameplay', number: '07', title: '音乐游戏玩法', description: '按核心互动整理六大玩法家族，再用操作、谱面、判定与模式对照受欢迎的代表作品。'},
-  {key: 'handmade-studio', number: '08', title: '手作饰品游戏', description: '从 Luashaa 品牌灵感到十二类创作题材，整理手作经营玩法、Steam 参考、3D 写实可爱风与首版验证。'}
+  {key: 'handmade-studio', number: '08', title: '手作饰品游戏', description: '用六类游戏技能重整十二类题材：定位与低竞争机会、创作规则、Steam 参考、3D 写实可爱风及原型验收。'}
 ];
 
 export const hotspotTopics = [
