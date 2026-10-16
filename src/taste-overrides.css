@@ -144,6 +144,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .form-field input, .form-field select, .form-field textarea { font-size: 18px; padding: 11px 13px; border-color: #cfd6df; border-radius: 6px; color: var(--ink); }
 .form-field input, .form-field select { height: 50px; }
 .form-field textarea { min-height: 104px; }
+.note-url { margin-bottom: 24px; }
+.note-url h2 { margin: 0 0 8px; font-size: 18px; }
+.note-url a { color: var(--ink); overflow-wrap: anywhere; line-height: 1.8; }
+.note-url svg { margin-left: 6px; vertical-align: middle; }
 .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: #8ea73d; box-shadow: 0 0 0 3px #aaca4220; }
 .editor-savebar { background: #10161f; padding: 14px 18px; color: #c0cad6; }
 .editor-savebar > span { font-size: 16px; }

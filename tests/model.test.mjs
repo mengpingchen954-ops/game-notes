@@ -32,6 +32,20 @@ test('note records round trip with note markdown and legacy compatibility',()=>{
   assert.equal(noteContent(simplified),content);
   assert.equal(markdown(simplified),`# ${note.title}\n\n${content}\n`);
 });
+test('note URLs survive backups and markdown without becoming note content',()=>{
+  const note={...blankRecord('note'),title:'参考网站',url:'https://example.com/game?q=灵感#notes',notes:'记录想法'};
+  assert.deepEqual(parseBackup(backup([note]))[0],note);
+  assert.match(markdown(note),/网址：https:\/\/example.com\/game/);
+  assert.equal(noteContent(note),'记录想法');
+  const legacy={...note};delete legacy.url;
+  assert.equal(parseBackup(backup([legacy]))[0].url,'');
+  assert.equal(mergeRecords([legacy],[{...legacy,url:''}]).skipped,1);
+  assert.equal(mergeRecords([note],[{...note,url:'http://example.org'}],()=> 'copy-url').added,1);
+  for(const url of ['javascript:alert(1)','data:text/html,test','ftp://example.com','invalid',null,123,'https://example.com/'+ 'a'.repeat(4096)]) {
+    assert.throws(()=>parseBackup(backup([{...note,url}])),/网址/);
+  }
+});
+
 test('wild atlas notes expose the runnable package and README attachments',()=>{
   const note={...blankRecord('note'),title:'Demo思路-寻宝游戏',notes:'万灵秘图的寻宝流程'};
   assert.deepEqual(noteAttachments(note).map(file=>file.href),['/game-notes/wild-atlas-playable.zip','/game-notes/wild-atlas-README.md']);
