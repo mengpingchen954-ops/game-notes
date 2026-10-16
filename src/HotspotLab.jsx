@@ -46,6 +46,7 @@ function SectionContent({section, id}) {
     {section.bullets && <ul>{section.bullets.map(item => <li key={item}>{item}</li>)}</ul>}
     {section.steps && <ol className="lab-steps">{section.steps.map((step, index) => <li key={step.label}><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{step.label}</strong><p>{step.body}</p></div></li>)}</ol>}
     {section.table && <div className="lab-table-wrap" role="region" aria-label={`${section.title}表格`} tabIndex="0"><table><thead><tr>{section.table.columns.map(column => <th scope="col" key={column}>{column}</th>)}</tr></thead><tbody>{section.table.rows.map(row => <tr key={row[0]}>{row.map((cell, index) => index === 0 ? <th scope="row" key={index}>{cell}</th> : <td key={index}>{linkifyPlatformCell(cell)}</td>)}</tr>)}</tbody></table></div>}
+    {section.links && <ul className="lab-resource-links">{section.links.map(link => <li key={link.url}><a href={link.url} target="_blank" rel="noreferrer">{link.label}</a></li>)}</ul>}
   </section>;
 }
 

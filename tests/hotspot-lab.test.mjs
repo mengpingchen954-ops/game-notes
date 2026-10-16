@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {hotspotGroups, hotspotTopics, topicForKey, topicsForGroup} from '../src/hotspotData.js';
 
-test('hotspot lab includes philosophy, AI indie development and music gameplay as separate groups', () => {
-  assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy', 'ai-indie', 'music-gameplay']);
-  assert.equal(hotspotTopics.length, 22);
+test('hotspot lab includes philosophy, AI indie development, music and handmade studios as separate groups', () => {
+  assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy', 'ai-indie', 'music-gameplay', 'handmade-studio']);
+  assert.equal(hotspotTopics.length, 29);
   assert.equal(new Set(hotspotTopics.map(topic => topic.key)).size, hotspotTopics.length);
   for (const group of hotspotGroups) {
     const topics = topicsForGroup(group.key);
-    assert.equal(topics.length, group.key === 'philosophy' || group.key === 'music-gameplay' ? 4 : group.key === 'ai-indie' ? 2 : 3);
+    assert.equal(topics.length, group.key === 'handmade-studio' ? 7 : group.key === 'philosophy' || group.key === 'music-gameplay' ? 4 : group.key === 'ai-indie' ? 2 : 3);
     assert.ok(group.title && group.description);
     for (const topic of topics) {
       assert.equal(topicForKey(topic.key), topic);
@@ -27,6 +27,23 @@ test('hotspot lab includes philosophy, AI indie development and music gameplay a
   assert.equal(wulin.group, 'ai-indie');
   assert.match(JSON.stringify(wulin), /唐门·暴雨梨花弹珠台/);
   assert.match(JSON.stringify(wulin), /物理反馈/);
+});
+
+test('handmade references have unique HTTPS links and preserve release and source boundaries', () => {
+  const topics = topicsForGroup('handmade-studio');
+  const links = topics.flatMap(topic => topic.sections.flatMap(section => section.links ?? []));
+  assert.equal(new Set(links.map(link => link.url)).size, links.length);
+  for (const link of links) {
+    assert.equal(new URL(link.url).protocol, 'https:');
+    assert.ok(link.label);
+  }
+  const steam = JSON.stringify(topicForKey('handmade-steam'));
+  assert.equal(links.filter(link => new URL(link.url).hostname === 'store.steampowered.com').length, 20);
+  assert.match(steam, /2026年10月16日/);
+  assert.match(steam, /待发售/);
+  assert.match(steam, /DLC，需要 Cooking Simulator 本体/);
+  assert.match(JSON.stringify(topicForKey('handmade-luashaa')), /尚未逐项独立核实/);
+  assert.match(JSON.stringify(topicForKey('handmade-direction')), /尚未被确认为最终立项方案/);
 });
 
 test('tables are structurally complete and the lab covers the agreed evidence chain', () => {

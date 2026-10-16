@@ -45,6 +45,21 @@ npm run build
 
 内容为2026年10月13日的对话整理，涵盖经典与受欢迎作品，不是实时市场排名。内容数据位于 `src/musicGameLab.js`。
 
+## 手作饰品游戏
+
+左侧“游戏设计模块”新增独立的“手作饰品游戏”，收录2026年10月16日的完整创意讨论：
+
+- [模块入口](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-studio)
+- [创意与方向总览](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-direction)
+- [Luashaa 品牌灵感](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-luashaa)
+- [全部候选题材](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-ideas)
+- [手作与经营玩法](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-gameplay)
+- [Steam 参考游戏](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-steam)
+- [3D 视觉与材质](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-visual)
+- [首版范围与验证](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-prototype)
+
+内容数据位于 `src/handmadeStudioLab.js`。已明确的用户偏好、讨论建议与待定事项分别标注；品牌经营数据保留来源边界，Steam 发售状态带查询日期。外部参考通过原站链接访问。
+
 ## 神仙考核策划
 
 - [《天庭考核：今日宜飞升》详细 GDD](docs/heavenly-exam-gdd.md)

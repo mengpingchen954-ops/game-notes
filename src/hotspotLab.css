@@ -68,6 +68,9 @@
 .lab-table-wrap tbody th { width: 21%; color: #40582c; font-weight: 800; }
 .lab-table-wrap a { color: #4d6eaa; text-decoration: underline; text-decoration-color: #a7b9d8; text-underline-offset: 2px; }
 .lab-table-wrap a:hover { color: #304f83; text-decoration-color: currentColor; }
+.lab-article-section .lab-resource-links { display: flex; flex-wrap: wrap; gap: 8px 20px; list-style: none; padding-left: 0; }
+.lab-resource-links li + li { margin-top: 0; }
+.lab-resource-links a { color: #4d6eaa; text-underline-offset: 3px; overflow-wrap: anywhere; }
 .lab-table-wrap tbody tr:last-child > * { border-bottom: 0; }
 .lab-checklist { padding: 20px 21px; border: 1px solid #bdcf8d; border-radius: 7px; background: #f6faec; }
 .lab-checklist h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; color: #405c2c; font-size: 20px; }
