@@ -57,8 +57,11 @@ npm run build
 - [游戏导演 · 竞品与机会](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-steam)
 - [美术与技术 · 3D 目标](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-visual)
 - [制作人 · 原型与验收](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-prototype)
+- [选题筛选 · 优先级](https://mengpingchen954-ops.github.io/game-notes/#lab/handmade-priorities)
 
 内容数据位于 `src/handmadeStudioLab.js`。保留十二类原始题材及19款 Steam 参考，增加低直接竞争机会、可解释委托与重试规则、3D 资产 brief、G0—G4 阶段验收和风险裁剪。已明确的用户偏好、策划建议与待定事项分别标注；品牌资料和 Steam 状态保留来源及日期边界。
+
+2026年10月20日新增独立的“选题筛选 · 优先级”卡片与页面，数据位于 `src/handmadePriorities.js`。整合本轮全部想法为20个方向，按三档立项优先级排序，重点展开药材经营、非遗发饰、兔场、制伞与宠物裁缝。保留用户明确的兔肉、皮毛售卖和学习、采集、加工药材售卖设定；区分用户决定、策划建议与小样本市场检索的证据边界，原有手作专题继续保留。
 
 ## 神仙考核策划
 

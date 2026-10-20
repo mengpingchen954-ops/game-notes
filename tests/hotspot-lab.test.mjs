@@ -4,11 +4,11 @@ import {hotspotGroups, hotspotTopics, topicForKey, topicsForGroup} from '../src/
 
 test('hotspot lab includes philosophy, AI indie development, music and handmade studios as separate groups', () => {
   assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy', 'ai-indie', 'music-gameplay', 'handmade-studio']);
-  assert.equal(hotspotTopics.length, 29);
+  assert.equal(hotspotTopics.length, 30);
   assert.equal(new Set(hotspotTopics.map(topic => topic.key)).size, hotspotTopics.length);
   for (const group of hotspotGroups) {
     const topics = topicsForGroup(group.key);
-    assert.equal(topics.length, group.key === 'handmade-studio' ? 7 : group.key === 'philosophy' || group.key === 'music-gameplay' ? 4 : group.key === 'ai-indie' ? 2 : 3);
+    assert.equal(topics.length, group.key === 'handmade-studio' ? 8 : group.key === 'philosophy' || group.key === 'music-gameplay' ? 4 : group.key === 'ai-indie' ? 2 : 3);
     assert.ok(group.title && group.description);
     for (const topic of topics) {
       assert.equal(topicForKey(topic.key), topic);
@@ -38,7 +38,8 @@ test('handmade references have unique HTTPS links and preserve release and sourc
     assert.ok(link.label);
   }
   const steam = JSON.stringify(topicForKey('handmade-steam'));
-  assert.equal(links.filter(link => new URL(link.url).hostname === 'store.steampowered.com').length, 20);
+  const steamLinks = topicForKey('handmade-steam').sections.flatMap(section => section.links ?? []);
+  assert.equal(steamLinks.filter(link => new URL(link.url).hostname === 'store.steampowered.com').length, 20);
   assert.match(steam, /2026年10月16日/);
   assert.match(steam, /待发售/);
   assert.match(steam, /DLC，需要 Cooking Simulator 本体/);

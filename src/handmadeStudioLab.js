@@ -1,4 +1,6 @@
-// 2026-10-16 游戏技能重整：定位、机会、规则、美术、技术与阶段验收。
+import {handmadePrioritiesTopic} from './handmadePriorities.js';
+
+// 2026-10-16 游戏技能重整；2026-10-20 新增独立的选题筛选与优先级页面。
 export const handmadeStudioLabTopics = [
   {
     key: 'handmade-direction', group: 'handmade-studio', label: '游戏导演 · 定位与取舍',
@@ -515,5 +517,6 @@ export const handmadeStudioLabTopics = [
       }
     ],
     checklist: ['确认一个品类与一种主要材料', '先完成可旋转的目标画质样品', '验证有限塑形与撤销、保存', '让真实目标玩家完成一个委托', '据试玩结果决定是否扩展经营与品类']
-  }
+  },
+  handmadePrioritiesTopic
 ];
