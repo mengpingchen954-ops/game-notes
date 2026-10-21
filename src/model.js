@@ -1,4 +1,14 @@
 export const STORAGE_KEY = 'game-notes.library.v1';
+export const SORT_KEY = 'game-notes.library.sort';
+export const sortOptions = [['important','重要优先'],['updated','最近更新'],['oldest','最早更新'],['title','按名称']];
+export function loadSort(){try{const value=localStorage.getItem(SORT_KEY);return sortOptions.some(([key])=>key===value)?value:'important';}catch{return 'important';}}
+export function sortRecords(records,sort='important'){
+  return [...records].sort((a,b)=>{
+    if(sort==='title')return a.title.localeCompare(b.title,'zh-CN');
+    if(sort==='important'&&Boolean(a.important)!==Boolean(b.important))return a.important?-1:1;
+    return sort==='oldest'?Date.parse(a.updatedAt)-Date.parse(b.updatedAt):Date.parse(b.updatedAt)-Date.parse(a.updatedAt);
+  });
+}
 export const MAX_NOTE_ATTACHMENT_BYTES = 50 * 1024 * 1024;
 export const MAX_NOTE_ATTACHMENTS = 10;
 export const sections = [
@@ -35,12 +45,14 @@ export const seed = {
   sources:'基于本次对话的设计分析；范围为单人基础玩法，不涵盖全部扩展道具和多人模式。\nSteam：https://store.steampowered.com/app/2835570/',
   updatedAt:'2026-09-10T08:00:00.000Z'
 };
-export function blankRecord(kind='analysis'){return {id:crypto.randomUUID(),kind,title:'',url:'',subtitle:'',genre:'',tags:[],attachments:[],status:'草稿',favorite:false,framework:'general',summary:'',fields:Object.fromEntries(fieldKeys.map(k=>[k,''])),loop:[],takeaways:'',notes:'',sources:'',updatedAt:new Date().toISOString()};}
+export function blankRecord(kind='analysis'){return {id:crypto.randomUUID(),kind,title:'',url:'',subtitle:'',genre:'',tags:[],attachments:[],status:'草稿',favorite:false,important:false,framework:'general',summary:'',fields:Object.fromEntries(fieldKeys.map(k=>[k,''])),loop:[],takeaways:'',notes:'',sources:'',updatedAt:new Date().toISOString()};}
 export function completion(record){return fieldKeys.filter(k=>record.fields[k]?.trim()).length;}
 export function normalizeRecord(r){
   if (!r || typeof r !== 'object' || Array.isArray(r)) throw new Error('分析条目格式不正确');
   const kind=r.kind===undefined?'analysis':r.kind;
   const url=r.url===undefined?'':r.url;
+  const important=r.important===undefined?false:r.important;
+  if(typeof important!=='boolean') throw new Error('重要标记无效');
   if(typeof url!=='string'||url.length>4096) throw new Error('网址无效');
   if(url){let parsed;try{parsed=new URL(url);}catch{throw new Error('网址无效');}if(!['https:','http:'].includes(parsed.protocol)) throw new Error('网址只支持 http 或 https');}
   for (const k of ['id','title','subtitle','genre','summary','takeaways','notes','sources','updatedAt']) if(typeof r[k]!=='string'||r[k].length>(k==='notes'&&r.kind==='note'?1000000:100000)) throw new Error(`条目字段 ${k} 无效`);
@@ -52,7 +64,7 @@ export function normalizeRecord(r){
   if(!r.fields||fieldKeys.some(k=>typeof r.fields[k]!=='string'||r.fields[k].length>100000)) throw new Error('分析框架缺少字段');
   if(!Number.isFinite(Date.parse(r.updatedAt))) throw new Error('更新时间无效');
   if(!['analysis','note'].includes(kind)) throw new Error('条目类型无效');
-  return Object.fromEntries(['id','kind','title','url','subtitle','genre','summary','takeaways','notes','sources','updatedAt','status','framework','favorite','tags','loop','attachments','fields'].map(k=>[k,k==='fields'?Object.fromEntries(fieldKeys.map(f=>[f,r.fields[f]])):k==='kind'?kind:k==='url'?url:k==='attachments'?attachments:r[k]]));
+  return Object.fromEntries(['id','kind','title','url','subtitle','genre','summary','takeaways','notes','sources','updatedAt','status','framework','favorite','important','tags','loop','attachments','fields'].map(k=>[k,k==='fields'?Object.fromEntries(fieldKeys.map(f=>[f,r.fields[f]])):k==='kind'?kind:k==='url'?url:k==='important'?important:k==='attachments'?attachments:r[k]]));
 }
 export function parseBackup(text){
   let value;try{value=JSON.parse(text);}catch{throw new Error('文件不是有效的 JSON 备份');}

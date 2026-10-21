@@ -1,6 +1,44 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {backup,blankRecord,completion,mergeRecords,normalizeRecord,parseBackup,seed,markdown,noteContent,noteAttachments} from '../src/model.js';
+import {backup,blankRecord,completion,mergeRecords,normalizeRecord,parseBackup,seed,markdown,noteContent,noteAttachments,sortRecords,loadSort,SORT_KEY} from '../src/model.js';
+
+test('importance is backward compatible, validated and preserved in backups and merges',()=>{
+ const legacy={...seed};delete legacy.important;
+ assert.equal(normalizeRecord(legacy).important,false);
+ assert.equal(blankRecord('note').important,false);
+ const important={...legacy,important:true};
+ assert.equal(parseBackup(backup([important]))[0].important,true);
+ assert.equal(mergeRecords([legacy],[{...legacy,important:false}]).skipped,1);
+ assert.equal(mergeRecords([legacy],[important],()=> 'important-copy').records[1].important,true);
+ for(const value of [null,1,'true',{}])assert.throws(()=>normalizeRecord({...seed,important:value}),/重要标记/);
+});
+
+test('sorting groups important records by recency and keeps other orders independent',()=>{
+ const records=[
+  {...seed,id:'new',title:'丙',updatedAt:'2026-10-21T00:00:00Z'},
+  {...seed,id:'old-important',title:'乙',important:true,updatedAt:'2026-10-19T00:00:00Z'},
+  {...seed,id:'new-important',title:'甲',important:true,updatedAt:'2026-10-20T00:00:00Z'},
+ ];
+ const ids=sort=>sortRecords(records,sort).map(r=>r.id);
+ assert.deepEqual(ids('important'),['new-important','old-important','new']);
+ assert.deepEqual(ids('updated'),['new','new-important','old-important']);
+ assert.deepEqual(ids('oldest'),['old-important','new-important','new']);
+ assert.deepEqual(ids('title'),[...records].sort((a,b)=>a.title.localeCompare(b.title,'zh-CN')).map(r=>r.id));
+ assert.deepEqual(records.map(r=>r.id),['new','old-important','new-important']);
+ assert.deepEqual(sortRecords([]),[]);
+});
+
+test('sort preference accepts known options and handles unavailable storage',()=>{
+ const previous=Object.getOwnPropertyDescriptor(globalThis,'localStorage');
+ try{
+  for(const [value,expected] of [['updated','updated'],['title','title'],['oldest','oldest'],['important','important'],[null,'important'],['unknown','important']]){
+   Object.defineProperty(globalThis,'localStorage',{configurable:true,value:{getItem(key){assert.equal(key,SORT_KEY);return value;}}});
+   assert.equal(loadSort(),expected);
+  }
+  Object.defineProperty(globalThis,'localStorage',{configurable:true,get(){throw new Error('blocked');}});
+  assert.equal(loadSort(),'important');
+ }finally{if(previous)Object.defineProperty(globalThis,'localStorage',previous);else delete globalThis.localStorage;}
+});
 
 test('seed completes all eight framework questions',()=>{assert.equal(completion(seed),8);});
 test('backup round trips normalized records',()=>{const parsed=parseBackup(backup([seed]));assert.equal(parsed.length,1);assert.deepEqual(parsed[0],normalizeRecord(seed));});

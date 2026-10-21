@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Layers3,Library,Star,FilePenLine,Plus,ArrowUpRight,ArrowRight,Search,Download,Upload,BookOpen,CalendarDays,Target,SlidersHorizontal,RotateCw,AudioLines,X,Check,Trash2,Copy,NotebookPen,Users,Workflow,Terminal,ExternalLink,Gamepad2,Flame} from 'lucide-react';
-import {sections,completion,noteContent,noteAttachments,MAX_NOTE_ATTACHMENT_BYTES,MAX_NOTE_ATTACHMENTS} from './model';
+import {Layers3,Library,Star,Flag,FilePenLine,Plus,ArrowUpRight,ArrowRight,Search,Download,Upload,BookOpen,CalendarDays,Target,SlidersHorizontal,RotateCw,AudioLines,X,Check,Trash2,Copy,NotebookPen,Users,Workflow,Terminal,ExternalLink,Gamepad2,Flame} from 'lucide-react';
+import {sections,completion,noteContent,noteAttachments,sortRecords,sortOptions,MAX_NOTE_ATTACHMENT_BYTES,MAX_NOTE_ATTACHMENTS} from './model';
 import {putAttachment} from './attachmentStore';
 import {knowledgeNotes} from './knowledge';
 import {worldbuildingNotes} from './worldbuilding';
@@ -41,13 +41,16 @@ export function Formula({gamble=false,onSection}){
  return <div className="formula"><div className="formula-label"><Layers3 size={15}/><span>设计拆解公式</span></div><div className="formula-equation"><strong>{gamble?'赌局游戏':'游戏体验'}</strong><span className="equals">=</span>{sections.map((s,i)=>{const Icon=layerIcons[i];return <React.Fragment key={s.id}><button className={'formula-part '+s.color} onClick={()=>onSection?.(s.id)}><Icon size={17}/><span>{gamble?s.title:s.general}</span></button>{i<3&&<span className="formula-plus">+</span>}</React.Fragment>;})}</div><p>先看懂选择，再看懂它为什么有趣。</p></div>;
 }
 export function GameDetail(props){return props.record.kind==='note'?<NoteDetail {...props}/>:<AnalysisDetail {...props}/>;}
-function AnalysisDetail({record,onEdit,onFavorite,onMarkdown,onDelete,onDuplicate}){
+function ImportantButton({record,onImportant,importanceSaving}){
+ return <button type="button" className={'important-button '+(record.important?'is-important':'')} aria-label={`${record.important?'取消重要标记':'标记为重要'}：${record.title}`} aria-pressed={Boolean(record.important)} disabled={importanceSaving} onClick={()=>onImportant(record.id)}><Flag size={17} fill={record.important?'currentColor':'none'} aria-hidden="true"/><span>{record.important?'重要':'标重要'}</span></button>;
+}
+function AnalysisDetail({record,onEdit,onFavorite,onMarkdown,onDelete,onDuplicate,onImportant,importanceSaving}){
  const [tab,setTab]=useState('framework');const [active,setActive]=useState('core');
  const monogram=(record.subtitle||record.title).split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()||'GN';
  useEffect(()=>{setTab('framework');setActive('core');},[record.id]);
  function goSection(id){setTab('framework');setActive(id);requestAnimationFrame(()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'}));}
  return <div className="document-layout"><article className="document">
-  <header className="game-heading"><div className="game-monogram">{monogram}<span>{record.framework==='gamble'?'RISK':'NOTE'}</span></div><div><div className="title-line"><h1>{record.title}</h1><button className={'icon-button favorite '+(record.favorite?'is-favorite':'')} aria-label={record.favorite?'取消收藏':'收藏分析'} onClick={onFavorite}><Star size={21} fill={record.favorite?'currentColor':'none'}/></button></div><p className="game-subtitle">{record.subtitle||'游戏设计分析'}</p><div className="metadata"><span className={'status-dot '+(record.status==='草稿'?'draft':'')}/>{record.status}<span className="meta-divider"/>{record.genre||'未分类'}{record.tags.map(t=><span className="tag" key={t}>{t}</span>)}</div></div></header>
+  <header className="game-heading"><div className="game-monogram">{monogram}<span>{record.framework==='gamble'?'RISK':'NOTE'}</span></div><div><div className="title-line"><h1>{record.title}</h1><ImportantButton record={record} onImportant={onImportant} importanceSaving={importanceSaving}/><button className={'icon-button favorite '+(record.favorite?'is-favorite':'')} aria-label={record.favorite?'取消收藏':'收藏分析'} onClick={onFavorite}><Star size={21} fill={record.favorite?'currentColor':'none'}/></button></div><p className="game-subtitle">{record.subtitle||'游戏设计分析'}</p><div className="metadata"><span className={'status-dot '+(record.status==='草稿'?'draft':'')}/>{record.status}<span className="meta-divider"/>{record.genre||'未分类'}{record.tags.map(t=><span className="tag" key={t}>{t}</span>)}</div></div></header>
   <div className="thesis"><span>一句话拆解</span><p>{record.summary||'还没有一句话总结。点击“编辑分析”，提炼这款游戏最关键的设计。'}</p></div>
   <Formula gamble={record.framework==='gamble'} onSection={goSection}/>
   <div className="document-tabs" role="tablist" aria-label="分析内容"><button role="tab" aria-selected={tab==='framework'} className={tab==='framework'?'active':''} onClick={()=>setTab('framework')}><Layers3 size={16}/>框架拆解<span>8</span></button><button role="tab" aria-selected={tab==='notes'} className={tab==='notes'?'active':''} onClick={()=>setTab('notes')}><NotebookPen size={16}/>游玩笔记</button><button role="tab" aria-selected={tab==='takeaways'} className={tab==='takeaways'?'active':''} onClick={()=>setTab('takeaways')}><BookOpen size={16}/>借鉴清单</button><span className="completion">已填写 {completion(record)} / 8</span></div>
@@ -56,10 +59,10 @@ function AnalysisDetail({record,onEdit,onFavorite,onMarkdown,onDelete,onDuplicat
  </article><aside className="contents"><div className="contents-sticky"><div className="contents-title">本篇目录</div>{sections.map((s,i)=><button className={tab==='framework'&&active===s.id?'active':''} key={s.id} onClick={()=>goSection(s.id)}><span>{s.number}</span>{record.framework==='gamble'?s.title:s.general}</button>)}<div className="reading-note"><BookOpen size={19}/><h3>从玩家，到设计者</h3><p>别只记录“好玩”。<br/>找到让选择成立的那条规则。</p></div><button className="export-article" onClick={onMarkdown}><Download size={15}/>导出本文 <ArrowUpRight size={14}/></button></div></aside></div>;
 }
 
-function NoteDetail({record,onFavorite,onDelete,onDuplicate}){
+function NoteDetail({record,onFavorite,onDelete,onDuplicate,onImportant,importanceSaving}){
  const attachments=noteAttachments(record);
  return <div className="editor-page note-reader"><article className="document">
-  <header className="title-line"><h1>{record.title}</h1><button className={'icon-button favorite '+(record.favorite?'is-favorite':'')} aria-label={record.favorite?'取消收藏':'收藏笔记'} onClick={onFavorite}><Star size={21} fill={record.favorite?'currentColor':'none'}/></button></header>
+  <header className="title-line"><h1>{record.title}</h1><ImportantButton record={record} onImportant={onImportant} importanceSaving={importanceSaving}/><button className={'icon-button favorite '+(record.favorite?'is-favorite':'')} aria-label={record.favorite?'取消收藏':'收藏笔记'} onClick={onFavorite}><Star size={21} fill={record.favorite?'currentColor':'none'}/></button></header>
   {record.url&&<section className="note-url" aria-label="网址"><h2>网址</h2><a href={record.url} target="_blank" rel="noopener noreferrer">{record.url}<ExternalLink size={16}/></a></section>}
   <div className="long-text">{noteContent(record)||'这里还是空白。点击“编辑笔记”开始记录。'}</div>
   {attachments.length>0&&<section className="note-attachments" aria-label="笔记附件"><div><strong>笔记附件</strong><span>点击下载或打开</span></div><div className="attachment-list">{attachments.map(file=><a className="attachment-card" href={file.href} target="_blank" rel="noreferrer" download={file.download||file.href.endsWith('.zip')?file.download||true:undefined} key={file.href}><span>{file.name}</span><small>{file.type}</small><ArrowUpRight size={15}/></a>)}</div></section>}
@@ -67,12 +70,30 @@ function NoteDetail({record,onFavorite,onDelete,onDuplicate}){
  </article></div>;
 }
 
-export function LibraryView({records,mode,onSelect,onNew}){
- const [query,setQuery]=useState('');const [genre,setGenre]=useState('all');const [sort,setSort]=useState('updated');
+export function LibraryView({records,mode,onSelect,onNew,onImportant,importanceSaving,sort,onSort}){
+ const [query,setQuery]=useState('');const [genre,setGenre]=useState('all');
  const genres=[...new Set(records.map(r=>r.genre||'未分类'))];
  const base=records.filter(r=>mode==='favorites'?r.favorite:mode==='drafts'?r.status==='草稿':true);
- const filtered=base.filter(r=>(genre==='all'||(r.genre||'未分类')===genre)&&[r.title,r.subtitle,r.summary,r.genre,...r.tags,...Object.values(r.fields),r.notes,r.takeaways].join(' ').toLowerCase().includes(query.trim().toLowerCase())).sort((a,b)=>sort==='title'?a.title.localeCompare(b.title,'zh-CN'):Date.parse(b.updatedAt)-Date.parse(a.updatedAt));
- return <div className="library-page"><div className="page-intro"><div><h1>{mode==='favorites'?'我的收藏':mode==='drafts'?'草稿':'游戏灵感库'}</h1><p>把游玩时闪过的想法先记下来，再慢慢整理。</p></div><button className="primary" onClick={onNew}><Plus size={17}/>新建笔记</button></div><div className="library-toolbar"><label className="search-box"><Search size={18}/><input aria-label="搜索笔记" placeholder="搜索游戏、机制或笔记…" value={query} onChange={e=>setQuery(e.target.value)}/>{query&&<button aria-label="清除搜索" onClick={()=>setQuery('')}><X size={14}/></button>}</label><select aria-label="类型筛选" value={genre} onChange={e=>setGenre(e.target.value)}><option value="all">全部类型</option>{genres.map(g=><option key={g}>{g}</option>)}</select><select aria-label="排序方式" value={sort} onChange={e=>setSort(e.target.value)}><option value="updated">最近更新</option><option value="title">按名称</option></select></div><div className="list-count">{filtered.length} 条内容<span>灵感先落下来，价值才有机会留下。</span></div><div className="game-list">{filtered.map((r,i)=><button className="game-row" key={r.id} onClick={()=>onSelect(r.id)}><span className="row-index">{String(i+1).padStart(2,'0')}</span><span className="row-info"><strong>{r.title}{r.favorite&&<Star size={14} fill="currentColor"/>}</strong><small>{r.kind==='note'?'灵感笔记':r.subtitle||r.genre||'未分类'}</small><span>{r.kind==='note'?(noteContent(r)||'还没有内容，点击继续编辑。'):(r.summary||'还没有摘要，打开编辑器补上一句。')}</span></span><span className="row-status">{r.status}<small>{r.kind==='note'?'笔记':`${completion(r)} / 8 项`}</small></span><ArrowUpRight size={20}/></button>)}</div>{filtered.length===0&&<div className="empty-state"><Search size={30}/><h2>{query?'没有找到匹配的内容':mode==='favorites'?'把值得反复看的内容收藏在这里':mode==='drafts'?'暂时没有草稿':'从第一条灵感开始'}</h2><p>{query?'试试游戏名称、机制关键词，或笔记中的一句话。':'记录一个想法，之后随时回来编辑。'}</p><button className="secondary" onClick={onNew}><Plus size={16}/>新建笔记</button></div>}<button className="new-row" onClick={onNew}><span><Plus size={21}/></span><div><strong>下一条，记下什么？</strong><p>从一个让你印象深刻的瞬间开始。</p></div><ArrowRight size={18}/></button></div>;
+ const filtered=sortRecords(base.filter(r=>(genre==='all'||(r.genre||'未分类')===genre)&&[r.title,r.subtitle,r.summary,r.genre,...r.tags,...Object.values(r.fields),r.notes,r.takeaways].join(' ').toLowerCase().includes(query.trim().toLowerCase())),sort);
+ return <div className="library-page">
+  <div className="page-intro"><div><h1>{mode==='favorites'?'我的收藏':mode==='drafts'?'草稿':'游戏灵感库'}</h1><p>把游玩时闪过的想法先记下来，再慢慢整理。</p></div><button className="primary" onClick={onNew}><Plus size={17}/>新建笔记</button></div>
+  <div className="library-toolbar">
+   <label className="search-box"><Search size={18}/><input aria-label="搜索笔记" placeholder="搜索游戏、机制或笔记…" value={query} onChange={e=>setQuery(e.target.value)}/>{query&&<button aria-label="清除搜索" onClick={()=>setQuery('')}><X size={14}/></button>}</label>
+   <select aria-label="类型筛选" value={genre} onChange={e=>setGenre(e.target.value)}><option value="all">全部类型</option>{genres.map(g=><option key={g}>{g}</option>)}</select>
+   <select aria-label="排序方式" value={sort} onChange={e=>onSort(e.target.value)}>{sortOptions.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select>
+  </div>
+  <div className="list-count">{filtered.length} 条内容<span>灵感先落下来，价值才有机会留下。</span></div>
+  <div className="game-list">{filtered.map((r,i)=><div className={'game-row '+(r.important?'is-important':'')} key={r.id}>
+   <button className="row-open" onClick={()=>onSelect(r.id)}>
+    <span className="row-index">{String(i+1).padStart(2,'0')}</span>
+    <span className="row-info"><strong>{r.title}{r.favorite&&<Star size={14} fill="currentColor" aria-label="已收藏"/>}</strong><small>{r.kind==='note'?'灵感笔记':r.subtitle||r.genre||'未分类'}</small><span>{r.kind==='note'?(noteContent(r)||'还没有内容，点击继续编辑。'):(r.summary||'还没有摘要，打开编辑器补上一句。')}</span></span>
+    <span className="row-status">{r.status}<small>{r.kind==='note'?'笔记':`${completion(r)} / 8 项`}</small></span><ArrowUpRight size={20}/>
+   </button>
+   <ImportantButton record={r} onImportant={onImportant} importanceSaving={importanceSaving}/>
+  </div>)}</div>
+  {filtered.length===0&&<div className="empty-state"><Search size={30}/><h2>{query?'没有找到匹配的内容':mode==='favorites'?'把值得反复看的内容收藏在这里':mode==='drafts'?'暂时没有草稿':'从第一条灵感开始'}</h2><p>{query?'试试游戏名称、机制关键词，或笔记中的一句话。':'记录一个想法，之后随时回来编辑。'}</p><button className="secondary" onClick={onNew}><Plus size={16}/>新建笔记</button></div>}
+  <button className="new-row" onClick={onNew}><span><Plus size={21}/></span><div><strong>下一条，记下什么？</strong><p>从一个让你印象深刻的瞬间开始。</p></div><ArrowRight size={18}/></button>
+ </div>;
 }
 export function TemplateView({onNew}){return <div className="template-page"><div className="page-intro"><div><h1>把“好玩”，拆成可以理解的设计。</h1><p>四个层级，八个问题。用统一的语言积累你的游戏观察。</p></div></div><Formula onSection={id=>document.getElementById('template-'+id)?.scrollIntoView({behavior:'smooth'})}/><div className="template-sections">{sections.map((s,i)=>{const Icon=layerIcons[i];return <section id={'template-'+s.id} className={s.color} key={s.id}><div className="section-heading"><span className="section-number">{s.number}</span><div><h2>{s.general}</h2><p>{s.caption}</p></div><Icon size={22}/></div>{s.fields.map(f=><div className="template-question" key={f.key}><h3>{f.label}</h3><p>{f.hint}</p></div>)}</section>;})}</div><div className="template-bottom"><div><h2>先填核心玩法和操控空间。</h2><p>它们决定是否好玩；重玩变化决定是否耐玩，氛围包装决定感受。</p></div><button className="primary" onClick={onNew}><Plus size={17}/>使用模板</button></div></div>;}
 const installCommand=`New-Item -ItemType Directory -Force "$HOME\\.agents\\skills" | Out-Null
