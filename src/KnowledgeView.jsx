@@ -15,11 +15,11 @@ export function KnowledgeIndex({onView}) {
 export default function KnowledgeView({note,onView}) {
   return <article className="knowledge-page">
     <header className="knowledge-header">
-      <button className="guide-link-button" onClick={() => onView('guide')}>返回工作室指南</button>
+      <button className="guide-link-button" onClick={() => onView(note.backView || 'guide')}>{note.backLabel || '返回工作室指南'}</button>
       <h1>{note.title}</h1><p>{note.description}</p>
       <small>对话整理 · {note.date || '2026年9月21日'}</small>
     </header>
-    <div className="knowledge-question"><strong>讨论的问题</strong><p>{note.question}</p></div>
+    <div className="knowledge-question"><strong>{note.questionLabel || '讨论的问题'}</strong><p>{note.question}</p></div>
     <div className="knowledge-takeaway"><BookOpen size={20}/><p>{note.takeaway}</p></div>
     <nav className="knowledge-toc" aria-label="本文目录">{note.sections.map((section,i) => <button key={section.title} onClick={() => document.getElementById(`${note.key}-${i}`)?.scrollIntoView({behavior:'smooth',block:'start'})}>{section.title}</button>)}</nav>
     {note.sections.map((section,i) => <section className="knowledge-section" id={`${note.key}-${i}`} key={section.title}>

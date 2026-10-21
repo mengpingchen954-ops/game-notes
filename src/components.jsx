@@ -3,6 +3,7 @@ import {Layers3,Library,Star,FilePenLine,Plus,ArrowUpRight,ArrowRight,Search,Dow
 import {sections,completion,noteContent,noteAttachments,MAX_NOTE_ATTACHMENT_BYTES,MAX_NOTE_ATTACHMENTS} from './model';
 import {putAttachment} from './attachmentStore';
 import {knowledgeNotes} from './knowledge';
+import {worldbuildingNotes} from './worldbuilding';
 import {KnowledgeIndex} from './KnowledgeView';
 import {hotspotGroups, topicForKey} from './hotspotData';
 import {groupIcons} from './hotspotIcons';
@@ -28,6 +29,7 @@ export function Sidebar({records,view,activeId,onView,onSelect,onNew,onImport,on
   <a className="brand" href="#library" onClick={e=>{e.preventDefault();onView('library');}}><span className="brand-mark"><Layers3 size={23}/></span><span>游戏拆解室<small>GAME NOTES</small></span></a>
   <button className="sidebar-new" onClick={onNew}><Plus size={17}/>新建笔记<span>N</span></button>
   <div className="rail-label">我的工作台</div><nav>{nav.map(([key,Icon,label,count])=><button key={key} className={'nav-item '+(view===key?'selected':'')} onClick={()=>onView(key)}><Icon size={18}/>{label}{count!==null&&<span>{count}</span>}</button>)}</nav>
+  <div className="rail-label studio-label">小说世界观</div><nav className="studio-nav" aria-label="小说世界观">{worldbuildingNotes.map(({key,label})=><button key={key} className={'nav-item '+(view===key?'selected':'')} aria-current={view===key?'page':undefined} onClick={()=>onView(key)}><BookOpen size={18}/>{label}</button>)}</nav>
   <div className="rail-label studio-label">游戏设计模块</div><nav className="studio-nav" aria-label="游戏设计模块">{hotspotGroups.map(group=>{const Icon=groupIcons[group.key];const active=activeLabGroup===group.key;return <button key={group.key} className={'nav-item '+(active?'selected':'')} aria-current={active?'page':undefined} onClick={()=>onView(`lab:${group.key}`)}><Icon size={18}/>{group.title}</button>;})}</nav>
   <div className="rail-label studio-label">开发与商业笔记</div><nav className="studio-nav" aria-label="开发与商业笔记">{knowledgeNotes.map(({key,label})=><button key={key} className={'nav-item '+(view===key?'selected':'')} aria-current={view===key?'page':undefined} onClick={()=>onView(key)}><BookOpen size={18}/>{label}</button>)}</nav>
   <div className="rail-label studio-label">工作室模块</div><nav className="studio-nav">{studioModules.slice(1).filter(({key})=>key!=='plan'&&key!=='lab').map(({key,icon:Icon,label})=><button key={key} className={'nav-item '+(view===key?'selected':'')} onClick={()=>onView(key)}><Icon size={18}/>{label}</button>)}</nav>

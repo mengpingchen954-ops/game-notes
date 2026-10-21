@@ -11,6 +11,7 @@ import PlanView from './PlanView';
 import HotspotLab from './HotspotLab';
 import {groupForKey, topicForKey} from './hotspotData';
 import {knowledgeNotes} from './knowledge';
+import {worldbuildingNotes} from './worldbuilding';
 import './knowledge.css';
 import './plan.css';
 import './hotspotLab.css';
@@ -19,6 +20,7 @@ const WulinGame = React.lazy(() => import('./WulinGame'));
 
 function viewFromHash(hash) {
  const value=hash.replace(/^#/,'');
+ if(value==='world/silicon-era') return 'world-silicon-era';
  if(value==='plan') return 'plan';
  if(value==='lab') return 'lab';
  if(value==='play/wulin') return 'game';
@@ -27,6 +29,7 @@ function viewFromHash(hash) {
 }
 
 function hashForView(view) {
+ if(view==='world-silicon-era') return '#world/silicon-era';
  if(view==='plan') return '#plan';
  if(view==='lab') return '#lab';
  if(view==='game') return '#play/wulin';
@@ -41,7 +44,7 @@ function App(){
  useEffect(()=>{let active=true;(async()=>{try{const hydrated=await hydrateAttachments(initial.records);if(!active)return;setRecords(hydrated);localStorage.setItem(STORAGE_KEY,backup(withoutAttachmentData(hydrated)));await removeUnreferencedAttachments(hydrated);}catch{if(active)setError(current=>current||'附件存储不可用，请导出备份后再继续编辑。');}})();return()=>{active=false;};},[initial.records]);
  useEffect(()=>{if(!toast)return;const t=setTimeout(()=>setToast(''),4500);return()=>clearTimeout(t);},[toast]);
  useEffect(()=>{const handler=e=>{if(dirty){e.preventDefault();e.returnValue='';}};window.addEventListener('beforeunload',handler);return()=>window.removeEventListener('beforeunload',handler);},[dirty]);
- useEffect(()=>{const syncRoute=()=>{const route=viewFromHash(window.location.hash);if(route){setView(route);setEditing(null);setMobile(false);}else setView(current=>current==='plan'||current==='lab'||current.startsWith('lab:')?'library':current);};window.addEventListener('hashchange',syncRoute);window.addEventListener('popstate',syncRoute);return()=>{window.removeEventListener('hashchange',syncRoute);window.removeEventListener('popstate',syncRoute);};},[]);
+ useEffect(()=>{const syncRoute=()=>{const route=viewFromHash(window.location.hash);if(route){setView(route);setEditing(null);setMobile(false);}else setView(current=>current==='plan'||current==='lab'||current.startsWith('lab:')||current==='world-silicon-era'?'library':current);};window.addEventListener('hashchange',syncRoute);window.addEventListener('popstate',syncRoute);return()=>{window.removeEventListener('hashchange',syncRoute);window.removeEventListener('popstate',syncRoute);};},[]);
  function updatePlanUrl(v){const hash=hashForView(v);if(window.location.hash===hash)return;if(hash)window.location.hash=hash;else{const url=new URL(window.location.href);url.hash='';window.history.pushState(null,'',url);}}
  async function persist(next){if(initial.error&&error){setToast('请先导出原始数据并修复备份，避免覆盖现有资料。');return false;}try{await storeRecordAttachments(next);localStorage.setItem(STORAGE_KEY,backup(withoutAttachmentData(next)));await removeUnreferencedAttachments(next);setRecords(next);setError('');return true;}catch{setError('保存失败：附件存储空间不足或不可用。请保留当前编辑内容，并导出备份。');return false;}}
  function navigate(action){if(dirty){setConfirm({title:'放弃未保存的修改？',body:'这次编辑尚未保存。返回继续编辑，或放弃修改后离开。',confirmLabel:'放弃修改',danger:true,onConfirm:()=>{setDirty(false);setEditing(null);setConfirm(null);action();}});}else action();}
@@ -56,7 +59,7 @@ function App(){
  const [undo,setUndo]=useState(null);
  async function duplicate(){const copied={...structuredClone(record),id:crypto.randomUUID(),title:record.title+'（副本）',status:'草稿',updatedAt:new Date().toISOString()};if(await persist([copied,...records])){select(copied.id);setToast('已复制为一篇新草稿');}}
  useEffect(()=>{function key(e){const target=e.target;if(target instanceof HTMLElement&&(target.matches('input,textarea,select')||target.isContentEditable))return;if(e.key.toLowerCase()==='n'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();create();}}window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);});
- const note=knowledgeNotes.find(item=>item.key===view);
+ const note=worldbuildingNotes.find(item=>item.key===view)||knowledgeNotes.find(item=>item.key===view);
  const studioTitle=note?.title||studioModules.find(item=>item.key===view)?.title;
  const labTopic=view.startsWith('lab:')?topicForKey(view.slice(4)):null;
  const labGroup=groupForKey(labTopic?.group||(view.startsWith('lab:')?view.slice(4):null));
