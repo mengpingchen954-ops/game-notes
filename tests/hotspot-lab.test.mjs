@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {hotspotGroups, hotspotTopics, topicForKey, topicsForGroup} from '../src/hotspotData.js';
 
-test('hotspot lab includes philosophy, AI indie development, music and handmade studios as separate groups', () => {
-  assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy', 'ai-indie', 'music-gameplay', 'handmade-studio']);
-  assert.equal(hotspotTopics.length, 30);
+test('hotspot lab includes casual fusion after handmade studios as a separate group', () => {
+  assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy', 'ai-indie', 'music-gameplay', 'handmade-studio', 'casual-fusion']);
+  assert.equal(hotspotTopics.length, 36);
   assert.equal(new Set(hotspotTopics.map(topic => topic.key)).size, hotspotTopics.length);
   for (const group of hotspotGroups) {
     const topics = topicsForGroup(group.key);
-    assert.equal(topics.length, group.key === 'handmade-studio' ? 8 : group.key === 'philosophy' || group.key === 'music-gameplay' ? 4 : group.key === 'ai-indie' ? 2 : 3);
+    assert.equal(topics.length, group.key === 'casual-fusion' ? 6 : group.key === 'handmade-studio' ? 8 : group.key === 'philosophy' || group.key === 'music-gameplay' ? 4 : group.key === 'ai-indie' ? 2 : 3);
     assert.ok(group.title && group.description);
     for (const topic of topics) {
       assert.equal(topicForKey(topic.key), topic);

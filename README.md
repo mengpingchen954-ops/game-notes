@@ -65,6 +65,20 @@ npm run build
 
 2026年10月20日新增独立的“选题筛选 · 优先级”卡片与页面，数据位于 `src/handmadePriorities.js`。整合本轮全部想法为20个方向，按三档立项优先级排序，重点展开药材经营、非遗发饰、兔场、制伞与宠物裁缝。保留用户明确的兔肉、皮毛售卖和学习、采集、加工药材售卖设定；区分用户决定、策划建议与小样本市场检索的证据边界，原有手作专题继续保留。
 
+## 玩法融合与商业选题
+
+左侧“游戏设计模块”在“手作饰品游戏”下方新增独立模块，整理2026年10月25日关于经典玩法、行业题材、剧情与商业验证的讨论：
+
+- [模块入口](https://mengpingchen954-ops.github.io/game-notes/#lab/casual-fusion)
+- [商业优先筛选](https://mengpingchen954-ops.github.io/game-notes/#lab/fusion-selection)：8个候选方案和优先验证顺序。
+- [组合规律](https://mengpingchen954-ops.github.io/game-notes/#lab/fusion-patterns)：玩法、行业、约束、成长与剧情各自承担的作用。
+- [50个组合方向](https://mengpingchen954-ops.github.io/game-notes/#lab/fusion-ideas)：保留广泛构思及各方向的主要验证问题。
+- [剧情方案](https://mengpingchen954-ops.github.io/game-notes/#lab/fusion-stories)：让人物、订单与关卡规则相互关联。
+- [轻策略设计](https://mengpingchen954-ops.github.io/game-notes/#lab/fusion-strategy)：判断时机、调配资源与扩大地盘。
+- [核心玩法验证](https://mengpingchen954-ops.github.io/game-notes/#lab/fusion-validation)：原型范围、试玩观察与商业验证的区别。
+
+内容数据位于 `src/casualFusionLab.js`。排序是面向个人起步的设计判断，不是实时市场榜单、收益预测或最终立项决定；平台与收入模式仍保留待验证分支。
+
 ## 神仙考核策划
 
 - [《天庭考核：今日宜飞升》详细 GDD](docs/heavenly-exam-gdd.md)

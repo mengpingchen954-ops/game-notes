@@ -2,6 +2,7 @@
 import {philosophyLabTopics} from './philosophyLab.js';
 import {musicGameLabTopics} from './musicGameLab.js';
 import {handmadeStudioLabTopics} from './handmadeStudioLab.js';
+import {casualFusionLabTopics} from './casualFusionLab.js';
 
 export const hotspotGroups = [
   {
@@ -23,7 +24,8 @@ export const hotspotGroups = [
   {key: 'philosophy', number: '05', title: '思想小游戏', description: '用简单操作承载思想：最终主策划、七款玩法原型、20个世界观对比与首作验证。'},
   {key: 'ai-indie', number: '06', title: 'AI 独立游戏开发', description: '从 Harpagia 案例整理个人开发的工具、成本、上线节奏、玩家反馈与社区推广。'},
   {key: 'music-gameplay', number: '07', title: '音乐游戏玩法', description: '按核心互动整理六大玩法家族，再用操作、谱面、判定与模式对照受欢迎的代表作品。'},
-  {key: 'handmade-studio', number: '08', title: '手作饰品游戏', description: '手作与模拟经营的20个方向、优先级与差异化：玩法规则、竞品参考、3D 写实可爱风及原型验收。'}
+  {key: 'handmade-studio', number: '08', title: '手作饰品游戏', description: '手作与模拟经营的20个方向、优先级与差异化：玩法规则、竞品参考、3D 写实可爱风及原型验收。'},
+  {key: 'casual-fusion', number: '09', title: '玩法融合与商业选题', description: '经典玩法 × 行业 × 剧情：50个组合方向、8个候选方案、轻策略设计与核心玩法验证。'}
 ];
 
 export const hotspotTopics = [
@@ -254,6 +256,7 @@ export const hotspotTopics = [
   ...philosophyLabTopics,
   ...musicGameLabTopics,
   ...handmadeStudioLabTopics,
+  ...casualFusionLabTopics,
   {
     key: 'validation-funnel', group: 'selection', label: '验证漏斗',
     title: '先验证想看，再验证想玩，最后验证愿意回来',
