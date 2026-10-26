@@ -25,7 +25,7 @@ export const hotspotGroups = [
   {key: 'ai-indie', number: '06', title: 'AI 独立游戏开发', description: '从 Harpagia 案例整理个人开发的工具、成本、上线节奏、玩家反馈与社区推广。'},
   {key: 'music-gameplay', number: '07', title: '音乐游戏玩法', description: '按核心互动整理六大玩法家族，再用操作、谱面、判定与模式对照受欢迎的代表作品。'},
   {key: 'handmade-studio', number: '08', title: '手作饰品游戏', description: '手作与模拟经营的20个方向、优先级与差异化：玩法规则、竞品参考、3D 写实可爱风及原型验收。'},
-  {key: 'casual-fusion', number: '09', title: '玩法融合与商业选题', description: '经典玩法 × 行业 × 剧情：50个组合方向、8个候选方案、轻策略设计与核心玩法验证。'}
+  {key: 'casual-fusion', number: '09', title: '玩法融合与商业选题', description: '50个组合方向、8个候选按路线比较：旧珠新约原型规则、花艺备选、工坊调度与关卡产能验证。'}
 ];
 
 export const hotspotTopics = [
