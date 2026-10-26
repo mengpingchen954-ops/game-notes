@@ -1,3 +1,5 @@
+import {librarySeed} from './librarySeed.js';
+
 export const STORAGE_KEY = 'game-notes.library.v1';
 export const SORT_KEY = 'game-notes.library.sort';
 export const sortOptions = [['important','重要优先'],['updated','最近更新'],['oldest','最早更新'],['title','按名称']];
@@ -78,7 +80,7 @@ export function mergeRecords(existing,incoming,newId=()=>crypto.randomUUID()){
   return {records:result,added,skipped};
 }
 export function loadLibrary(){
-  try{const text=localStorage.getItem(STORAGE_KEY);return {records:text?parseBackup(text):[structuredClone(seed)],error:''};}
+  try{const text=localStorage.getItem(STORAGE_KEY);return {records:text?parseBackup(text):structuredClone(librarySeed),error:''};}
   catch(error){return {records:[],error:'本地资料暂时无法读取。原数据未被覆盖，请先导出原始数据，或导入有效备份。'};}
 }
 export function noteContent(r){return [r.subtitle&&`来源：${r.subtitle}`,r.genre&&`分类：${r.genre}`,r.tags.length&&`标签：${r.tags.join('、')}`,r.summary,r.notes,r.takeaways,r.sources].filter(Boolean).join('\n\n');}
