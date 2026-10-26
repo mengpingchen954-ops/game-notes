@@ -980,7 +980,10 @@ export const casualFusionLabTopics = [
               "空、空"
             ]
           ]
-        },
+        }
+      },
+      {
+        "title": "示例关卡参考解法与观察点",
         "steps": [
           {
             "label": "先完成订单 1",
