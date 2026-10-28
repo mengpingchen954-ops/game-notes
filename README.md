@@ -79,6 +79,19 @@ npm run build
 
 内容数据位于 `src/casualFusionLab.js`。2026年10月26日修订，保留六篇与50个方向，取消统一名次；以个人先完成小作品为前提，先验证旧珠新约，花艺为备选，买断与轻策略单独比较。增加取珠胜负、撤销与示例规则，补清花材去向、工坊交期和连续关卡产能检查。以上是待试玩的策划建议，不是市场榜单、收益预测或最终立项决定。
 
+## 逆袭成长与末日重建
+
+2026年10月28日新增独立模块，沿用现有导航、主题卡片、目录和表格。内容数据位于 `src/comebackSurvivalLab.js`，与“玩法融合与商业选题”互相链接：
+
+- [模块入口](https://mengpingchen954-ops.github.io/game-notes/#lab/comeback-survival)
+- [类型与方向](https://mengpingchen954-ops.github.io/game-notes/#lab/comeback-overview)
+- [古代穿越 · 贫穷翻身](https://mengpingchen954-ops.github.io/game-notes/#lab/comeback-ancient)
+- [丧尸重生 · 晶核堡垒](https://mengpingchen954-ops.github.io/game-notes/#lab/comeback-wasteland)
+- [竞品与参考边界](https://mengpingchen954-ops.github.io/game-notes/#lab/comeback-references)
+- [竞争力与原型验证](https://mengpingchen954-ops.github.io/game-notes/#lab/comeback-validation)
+
+保留两条用户原始设定，区分类型命名、核心循环、十二款讨论参考、差异化假设和原型范围。首饰、三消与具体原型数量仍是建议；尚未最终立项或独立核对参考游戏的最新版本，不作市场排名或收益预测。本轮只更新资料模块，不修改浏览器笔记存储。
+
 ## 神仙考核策划
 
 - [《天庭考核：今日宜飞升》详细 GDD](docs/heavenly-exam-gdd.md)

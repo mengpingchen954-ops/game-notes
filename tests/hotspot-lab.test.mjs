@@ -1,14 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {hotspotGroups, hotspotTopics, topicForKey, topicsForGroup} from '../src/hotspotData.js';
+import {hotspotGroups, hotspotTopics, groupForKey, topicForKey, topicsForGroup} from '../src/hotspotData.js';
 
-test('hotspot lab includes casual fusion after handmade studios as a separate group', () => {
-  assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy', 'ai-indie', 'music-gameplay', 'handmade-studio', 'casual-fusion']);
-  assert.equal(hotspotTopics.length, 36);
+test('hotspot lab includes fusion and comeback as separate groups after handmade studios', () => {
+  assert.deepEqual(hotspotGroups.map(group => group.key), ['selection', 'translation', 'validation', 'production', 'philosophy', 'ai-indie', 'music-gameplay', 'handmade-studio', 'casual-fusion', 'comeback-survival']);
+  assert.equal(hotspotTopics.length, 41);
   assert.equal(new Set(hotspotTopics.map(topic => topic.key)).size, hotspotTopics.length);
   for (const group of hotspotGroups) {
     const topics = topicsForGroup(group.key);
-    assert.equal(topics.length, group.key === 'casual-fusion' ? 6 : group.key === 'handmade-studio' ? 8 : group.key === 'philosophy' || group.key === 'music-gameplay' ? 4 : group.key === 'ai-indie' ? 2 : 3);
+    assert.equal(topics.length, group.key === 'comeback-survival' ? 5 : group.key === 'casual-fusion' ? 6 : group.key === 'handmade-studio' ? 8 : group.key === 'philosophy' || group.key === 'music-gameplay' ? 4 : group.key === 'ai-indie' ? 2 : 3);
     assert.ok(group.title && group.description);
     for (const topic of topics) {
       assert.equal(topicForKey(topic.key), topic);
@@ -50,6 +50,13 @@ test('handmade references have unique HTTPS links and preserve release and sourc
 test('tables are structurally complete and the lab covers the agreed evidence chain', () => {
   for (const topic of hotspotTopics) {
     for (const section of topic.sections) {
+      for (const link of section.links ?? []) {
+        const url = new URL(link.url);
+        if (url.hostname === 'mengpingchen954-ops.github.io' && url.pathname === '/game-notes/' && url.hash.startsWith('#lab/')) {
+          const key = decodeURIComponent(url.hash.slice(5));
+          assert.ok(topicForKey(key) || groupForKey(key), `${topic.key}: broken module link ${link.url}`);
+        }
+      }
       if (!section.table) continue;
       for (const row of section.table.rows) assert.equal(row.length, section.table.columns.length, `${topic.key}/${section.title}`);
     }

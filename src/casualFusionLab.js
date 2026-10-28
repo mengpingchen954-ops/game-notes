@@ -169,7 +169,10 @@ export const casualFusionLabTopics = [
             "body": "选择完整买断时优先比较裁衣与美甲；选择调度时先做工坊，不为沿用花艺主选而强加匹配。"
           }
         ],
-        "callout": "本轮先完成策划与验证边界，不等于同时开发多个游戏。每轮限定一个核心，保留可回查的继续、修改或暂停理由。"
+        "callout": "本轮先完成策划与验证边界，不等于同时开发多个游戏。每轮限定一个核心，保留可回查的继续、修改或暂停理由。",
+        "links": [
+          {"label": "新增专题 · 逆袭成长与末日重建", "url": "https://mengpingchen954-ops.github.io/game-notes/#lab/comeback-survival"}
+        ]
       }
     ],
     "checklist": [
