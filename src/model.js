@@ -1,4 +1,5 @@
 import {librarySeed} from './librarySeed.js';
+import {libraryAttachments} from './libraryAttachments.js';
 
 export const STORAGE_KEY = 'game-notes.library.v1';
 export const SORT_KEY = 'game-notes.library.sort';
@@ -85,7 +86,7 @@ export function loadLibrary(){
 }
 export function noteContent(r){return [r.subtitle&&`来源：${r.subtitle}`,r.genre&&`分类：${r.genre}`,r.tags.length&&`标签：${r.tags.join('、')}`,r.summary,r.notes,r.takeaways,r.sources].filter(Boolean).join('\n\n');}
 export function noteAttachments(r){
-  const uploaded=(r.attachments||[]).filter(file=>file.data).map(file=>({name:file.name,href:file.data,type:'已上传',download:file.name}));
+  const uploaded=(r.attachments||[]).filter(file=>file.data||libraryAttachments[file.id]).map(file=>({name:file.name,href:file.data||libraryAttachments[file.id],type:'已上传',download:file.name}));
   const text=`${r.title}\n${r.notes}\n${r.summary}`.toLowerCase();
   const bundled=/万灵秘图|寻宝游戏|wild atlas/.test(text) ? [
     {name:'万灵秘图 · 可运行包',href:'/game-notes/wild-atlas-playable.zip',type:'下载 ZIP'},

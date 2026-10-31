@@ -1,3 +1,5 @@
+import {libraryAttachments} from './libraryAttachments.js';
+
 const DB_NAME = 'game-notes.attachments';
 const DB_VERSION = 1;
 const STORE_NAME = 'files';
@@ -79,7 +81,14 @@ export async function hydrateAttachments(records) {
         attachments.push(file);
         continue;
       }
-      const blob = await getAttachment(file.id);
+      let blob = await getAttachment(file.id);
+      if (!blob && libraryAttachments[file.id]) {
+        const response = await fetch(libraryAttachments[file.id]);
+        if (!response.ok) throw new Error(`附件下载失败：${file.name}`);
+        blob = await response.blob();
+        if (blob.size !== file.size) throw new Error(`附件大小不符：${file.name}`);
+        await putAttachment(file.id, blob);
+      }
       attachments.push(blob ? {...file, data: await blobToDataUrl(blob)} : file);
     }
     hydrated.push({...record, attachments});

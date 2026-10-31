@@ -1,5 +1,35 @@
-// Bundled personal library restored from the browser backup on 2026-10-26T01:21:40.014Z.
+// Published library from the user-provided backup exported on 2026-10-31.
 export const librarySeed = [
+  {
+    "id": "f38c78af-964f-465e-926e-846720640ac9",
+    "kind": "note",
+    "title": "手串",
+    "url": "https://mengpingchen954-ops.github.io/pencil-bead-atelier/",
+    "subtitle": "",
+    "genre": "",
+    "summary": "",
+    "takeaways": "",
+    "notes": "https://mengpingchen954-ops.github.io/old-beads-pink-atelier/  \nhttps://mengpingchen954-ops.github.io/old-beads-new-promises/",
+    "sources": "",
+    "updatedAt": "2026-10-31T08:28:07.011Z",
+    "status": "草稿",
+    "framework": "general",
+    "favorite": false,
+    "important": false,
+    "tags": [],
+    "loop": [],
+    "attachments": [],
+    "fields": {
+      "choice": "",
+      "information": "",
+      "stakes": "",
+      "control": "",
+      "dynamic": "",
+      "replay": "",
+      "setting": "",
+      "feedback": ""
+    }
+  },
   {
     "id": "14a28c70-d5a1-4121-b3d8-94c1002d8dfa",
     "kind": "note",
