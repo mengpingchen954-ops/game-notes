@@ -1,0 +1,2 @@
+# Keep downloaded attachments byte-for-byte identical across operating systems.
+/public/note-attachments/* -text -diff
