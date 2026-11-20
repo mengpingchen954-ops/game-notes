@@ -1,4 +1,4 @@
-// Published library from the user-provided backup exported on 2026-10-31.
+// Published library from the local browser snapshot saved on 2026-11-20.
 export const librarySeed = [
   {
     "id": "f38c78af-964f-465e-926e-846720640ac9",
@@ -15,7 +15,7 @@ export const librarySeed = [
     "status": "草稿",
     "framework": "general",
     "favorite": false,
-    "important": false,
+    "important": true,
     "tags": [],
     "loop": [],
     "attachments": [],
